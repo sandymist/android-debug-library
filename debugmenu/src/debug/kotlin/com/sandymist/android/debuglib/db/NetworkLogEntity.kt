@@ -2,23 +2,26 @@ package com.sandymist.android.debuglib.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.sandymist.android.debuglib.model.NetworkLog
 
 @Entity(tableName = "network_log")
+@TypeConverters(Converters::class)
 data class NetworkLogEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    @PrimaryKey
+    val id: String,
     val responseCode: Int,
     val url: String,
     val method: String,
-    val requestHeaders: String,
-    val responseHeaders: String,
+    val requestHeaders: List<String>,
+    val responseHeaders: List<String>,
     val body: String,
     val timestamp: Long,
     val turnaroundTime: Long,
 ) {
     fun toNetworkLog(): NetworkLog {
         return NetworkLog(
+            id = id,
             responseCode = responseCode,
             url = url,
             method = method,
@@ -33,11 +36,12 @@ data class NetworkLogEntity(
     companion object {
         fun fromNetworkLog(networkLog: NetworkLog): NetworkLogEntity {
             return NetworkLogEntity(
+                id = networkLog.id,
                 responseCode = networkLog.responseCode,
                 url = networkLog.url,
                 method = networkLog.method,
-                requestHeaders = networkLog.requestHeaders.toString(),
-                responseHeaders = networkLog.responseHeaders.toString(),
+                requestHeaders = networkLog.requestHeaders,
+                responseHeaders = networkLog.responseHeaders,
                 body = networkLog.body,
                 timestamp = networkLog.timestamp,
                 turnaroundTime = networkLog.turnaroundTime,

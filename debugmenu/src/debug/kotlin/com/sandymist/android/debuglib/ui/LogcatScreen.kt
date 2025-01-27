@@ -37,9 +37,10 @@ fun LogcatScreen(
             .padding(horizontal = 12.dp),
     ) {
         item {
-            Header(title = "Logcat") {
-                logList.clear()
-            }
+            Header(
+                title = "Logcat",
+                actionHandler = ActionHandler.deleteHandler { logList.clear() },
+            )
         }
 
         items(logList) {

@@ -13,7 +13,7 @@ import android.os.Process
 import android.util.Log
 
 class LogcatListener(
-    minLogLevel: Int = Log.DEBUG,
+    minLogLevel: Int = Log.INFO,
     private val log: (String) -> Unit,
     scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {

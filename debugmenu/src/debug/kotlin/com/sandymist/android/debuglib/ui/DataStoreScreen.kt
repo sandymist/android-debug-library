@@ -54,7 +54,7 @@ fun DataStoreScreen(
             .padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.Top,
     ) {
-        Header(title = "Data Store") { }
+        Header(title = "Data Store")
 
         if (items.isEmpty()) {
             Box(

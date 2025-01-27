@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sandymist.android.common.utilities.ageString
+import com.sandymist.android.common.utilities.debouncedClickable
 import com.sandymist.android.debuglib.model.NetworkLog
 import com.sandymist.android.debuglib.ui.viewmodel.NetworkLogViewModel
 
@@ -33,6 +34,7 @@ import com.sandymist.android.debuglib.ui.viewmodel.NetworkLogViewModel
 fun NetworkLogScreen(
     modifier: Modifier = Modifier,
     networkLogViewModel: NetworkLogViewModel,
+    onClick: (String) -> Unit,
 ) {
     val networkLog by networkLogViewModel.networkLogList.collectAsStateWithLifecycle()
 
@@ -41,9 +43,10 @@ fun NetworkLogScreen(
             .padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.Top,
     ) {
-        Header(title = "Network log") {
-            networkLogViewModel.clear()
-        }
+        Header(
+            title = "Network log",
+            actionHandler = ActionHandler.deleteHandler { networkLogViewModel.clear() },
+        )
 
         if (networkLog.isEmpty()) {
             Box(
@@ -55,7 +58,7 @@ fun NetworkLogScreen(
             return
         }
 
-        NetworkLogList(modifier = Modifier, logList = networkLog)
+        NetworkLogList(modifier = Modifier, logList = networkLog, onClick = onClick)
     }
 }
 
@@ -63,41 +66,56 @@ fun NetworkLogScreen(
 fun NetworkLogList(
     modifier: Modifier = Modifier,
     logList: List<NetworkLog>,
+    onClick: (String) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(logList) {
-            Row(
-                modifier = Modifier.padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.Start,
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(0.175f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = it.responseCode.toString(),
-                        color = if (it.responseCode >= 400) Color.Red else LocalContentColor.current,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(it.method)
-                }
-                Text(text = it.url, maxLines = 3, overflow = TextOverflow.Ellipsis)
+            NetworkLogItemSummary(it) { id ->
+                onClick(id)
             }
-
-            val age = it.timestamp / 1000
-            Text(
-                text = age.ageString(),
-                style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
-                textAlign = TextAlign.End,
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(top = 4.dp))
         }
     }
+}
+
+@Composable
+fun NetworkLogItemSummary(
+    networkLog: NetworkLog,
+    onClick: (String) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+            .debouncedClickable {
+                onClick(networkLog.id)
+            },
+        horizontalArrangement = Arrangement.Start,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(0.175f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = networkLog.responseCode.toString(),
+                color = if (networkLog.responseCode >= 400) Color.Red else LocalContentColor.current,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(networkLog.method)
+        }
+        Text(text = networkLog.url, maxLines = 3, overflow = TextOverflow.Ellipsis)
+    }
+
+    val age = networkLog.timestamp / 1000
+    Text(
+        text = age.ageString(),
+        style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
+        textAlign = TextAlign.End,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(top = 4.dp))
 }
 
 @Preview
@@ -105,21 +123,23 @@ fun NetworkLogList(
 fun PreviewNetworkLogScreen() {
     val logList = listOf(
         NetworkLog(
+            id = "1",
             responseCode = 201,
-            url = "https://url.com",
+            url = "--> GET https://www.omnycontent.com/d/programs/5e27a451-e6e6-4c51-aa03-a7370003783c/68621bca-f318-4ad9-90df-a82600035a72/image.jpg?t=1691192679&size=Large\n",
             method = "GET",
         ),
         NetworkLog(
+            id = "2",
             responseCode = 403,
-            url = "https://example.com",
+            url = "https://api.podcastindex.org/api/1.0/podcasts/trending?lang=en-US&cat=technology",
             method = "POST",
         ),
     )
-    NetworkLogList(logList = logList)
+    NetworkLogList(logList = logList) {}
 }
 
 @Preview
 @Composable
 fun PreviewEmptyNetworkLogScreen() {
-    NetworkLogList(logList = emptyList())
+    NetworkLogList(logList = emptyList()) {}
 }

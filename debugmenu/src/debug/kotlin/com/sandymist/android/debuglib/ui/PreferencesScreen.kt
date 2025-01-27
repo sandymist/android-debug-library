@@ -71,7 +71,7 @@ fun PreferencesScreen(
             .padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.Top,
     ) {
-        Header(title = "Preferences") { }
+        Header(title = "Preferences")
 
         if (items.isEmpty()) {
             Box(

@@ -10,9 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.sandymist.android.common.utilities.debouncedClickable
 import com.sandymist.android.debuglib.DebugLib
 
@@ -32,7 +34,26 @@ fun DebugScreen(
         composable("network-log") {
             NetworkLogScreen(
                 modifier = modifier,
-                networkLogViewModel = DebugLib.networkLogViewModel
+                networkLogViewModel = DebugLib.networkLogViewModel,
+                onClick = { id ->
+                    navController.navigate("network-log-detail/${id}")
+                }
+            )
+        }
+        composable(
+            route = "network-log-detail/{id}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.StringType },
+            )
+        ) {
+            val id = it.arguments?.getString("id") ?: ""
+
+            NetworkLogDetailScreen(
+                modifier = modifier,
+                getNetworkLog = {
+                    val networkLog = DebugLib.networkLogViewModel.getNetworkLog(id)
+                    networkLog
+                },
             )
         }
         composable("preferences") {
