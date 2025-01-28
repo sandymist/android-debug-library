@@ -2,6 +2,7 @@ package com.sandymist.android.debuglib.di
 
 import android.content.Context
 import com.sandymist.android.debuglib.db.DebugLibDatabase
+import com.sandymist.android.debuglib.db.LogcatDao
 import com.sandymist.android.debuglib.db.NetworkLogDao
 import dagger.Module
 import dagger.Provides
@@ -20,6 +21,10 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideFeedDao(database: DebugLibDatabase): NetworkLogDao =
+    fun provideNetworkLogDao(database: DebugLibDatabase): NetworkLogDao =
         database.networkLogDao()
+
+    @Provides
+    fun provideLogcatDao(database: DebugLibDatabase): LogcatDao =
+        database.logcatDao()
 }

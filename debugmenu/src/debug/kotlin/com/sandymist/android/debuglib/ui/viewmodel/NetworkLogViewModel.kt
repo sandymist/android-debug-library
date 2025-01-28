@@ -26,6 +26,8 @@ class NetworkLogViewModel (
 
     suspend fun getNetworkLog(id: String) = networkLogRepository.getNetworkLog(id)
 
+    suspend fun getAllNetworkLogEntries() = networkLogRepository.getAllNetworkLogEntries()
+
     fun clear() {
         networkLogRepository.clear()
     }

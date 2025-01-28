@@ -13,6 +13,9 @@ interface NetworkLogDao {
     @Query("SELECT * FROM network_log ORDER BY timestamp DESC")
     fun getAll(): Flow<List<NetworkLogEntity>>
 
+    @Query("SELECT * FROM network_log ORDER BY timestamp DESC")
+    suspend fun getAllEntities(): List<NetworkLogEntity>
+
     @Query("SELECT * FROM network_log WHERE id = :id")
     suspend fun getNetworkLog(id: String): NetworkLogEntity
 

@@ -7,30 +7,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.sandymist.android.debuglib.LogcatListener
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sandymist.android.debuglib.ui.viewmodel.LogcatViewModel
 
 @Composable
 fun LogcatScreen(
     modifier: Modifier = Modifier,
+    logcatViewModel: LogcatViewModel,
 ) {
-    val scope = rememberCoroutineScope()
-    val logList = remember { mutableStateListOf<String>() }
-
-    LaunchedEffect(Unit) {
-        LogcatListener(
-            log = { log ->
-                logList.add(0, log)
-            },
-            scope = scope
-        )
-    }
+    val logList by logcatViewModel.logcatList.collectAsStateWithLifecycle()
 
     LazyColumn(
         modifier = modifier
@@ -38,14 +27,16 @@ fun LogcatScreen(
     ) {
         item {
             Header(
-                title = "Logcat",
-                actionHandler = ActionHandler.deleteHandler { logList.clear() },
+                title = "Logcat (${logList.size}) entries",
+                actionHandler = ActionHandler.deleteHandler {
+                    logcatViewModel.clear()
+                },
             )
         }
 
         items(logList) {
             Text(
-                text = it,
+                text = it.message,
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .fillMaxWidth(),

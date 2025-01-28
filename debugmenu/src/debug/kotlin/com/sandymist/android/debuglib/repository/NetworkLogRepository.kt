@@ -25,6 +25,10 @@ class NetworkLogRepository(
         }
     }
 
+    suspend fun getAllNetworkLogEntries(): List<NetworkLog> = scope.async {
+        networkLogDao.getAllEntities().map { it.toNetworkLog() }
+    }.await()
+
     suspend fun getNetworkLog(id: String): NetworkLog {
         return scope.async {
             networkLogDao.getNetworkLog(id).toNetworkLog()

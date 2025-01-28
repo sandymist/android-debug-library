@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    kotlin("plugin.serialization") version "1.9.25"
     id("dagger.hilt.android.plugin")
     id("kotlin-parcelize")
     id("maven-publish")

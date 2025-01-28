@@ -4,13 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import java.io.FileNotFoundException
 
 private const val DB_VERSION = 2
 private const val DB_NAME = "debug_lib_database"
 
-@Database(entities = [NetworkLogEntity::class], version = DB_VERSION, exportSchema = true)
+@Database(entities = [NetworkLogEntity::class, LogcatEntity::class], version = DB_VERSION, exportSchema = true)
 abstract class DebugLibDatabase : RoomDatabase() {
     abstract fun networkLogDao(): NetworkLogDao
+    abstract fun logcatDao(): LogcatDao
 
     companion object {
         @Volatile
@@ -27,6 +29,16 @@ abstract class DebugLibDatabase : RoomDatabase() {
                     .build()
                 INSTANCE = instance
                 instance
+            }
+        }
+
+        fun getDatabaseSize(context: Context): Long {
+            val dbFile = context.getDatabasePath(DB_NAME)
+
+            if (dbFile.exists()) {
+                return dbFile.length()
+            } else {
+                throw FileNotFoundException("Database file not found: ${dbFile.absolutePath}")
             }
         }
     }

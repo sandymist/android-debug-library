@@ -1,5 +1,8 @@
 package com.sandymist.android.debuglib.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class NetworkLog(
     val id: String,
     val responseCode: Int,
