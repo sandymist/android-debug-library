@@ -100,9 +100,11 @@ fun DebugMenu(
         DataItem(label = "View preferences", modifier = Modifier.debouncedClickable {
             navController.navigate("preferences")
         })
-        DataItem(label = "View DataStore", modifier = Modifier.debouncedClickable {
-            navController.navigate("datastore")
-        })
+        // TODO: enable after figuring out how to handle not instantiating multiple data store
+        // objects
+//        DataItem(label = "View DataStore", modifier = Modifier.debouncedClickable {
+//            navController.navigate("datastore")
+//        })
         DataItem(label = "Summary", modifier = Modifier.debouncedClickable {
             navController.navigate("summary")
         })
