@@ -1,5 +1,6 @@
 package com.sandymist.android.debuglib.ui
 
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -27,11 +28,13 @@ import androidx.navigation.NavController
 import com.sandymist.android.common.utilities.debouncedClickable
 import com.sandymist.android.debuglib.DebugLib
 import com.sandymist.android.debuglib.model.ExportData
+import com.sandymist.android.debuglib.model.HarData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import timber.log.Timber
+import java.io.File
 
 @Composable
 fun DebugMenu(
@@ -42,6 +45,7 @@ fun DebugMenu(
     val scope = rememberCoroutineScope()
     val networkLogViewModel = DebugLib.networkLogViewModel
     val logcatViewModel = DebugLib.logcatViewModel
+    val preferencesViewModel = DebugLib.preferencesViewModel
 
     Column(
         modifier = modifier
@@ -60,14 +64,26 @@ fun DebugMenu(
                         scope.launch(Dispatchers.Default) {
                             val networkLogData = networkLogViewModel.getAllNetworkLogEntries()
                             val logcatData = logcatViewModel.getAllLogcatEntries()
+                            val preferencesData = preferencesViewModel.getAllPreferenceEntries()
                             val exportData = ExportData(
                                 networkLogList = networkLogData,
                                 logcatList = logcatData,
+                                preferencesList = preferencesData,
                             )
                             val dataAsString =
                                 Json.encodeToString(ExportData.serializer(), exportData)
+
+                            val harData = HarData(
+                                log = HarData.Log(
+                                    creator = HarData.Log.Creator(name = "DebugLib", version = "0.1"),
+                                    entries = networkLogData,
+                                    pages = null,
+                                    version = "1.0",
+                                )
+                            )
+                            val harAsString = Json.encodeToString(HarData.serializer(), harData)
                             withContext(Dispatchers.Main) {
-                                shareDebugInfoAsFileAttachment(context, dataAsString)
+                                shareDebugInfoAsFileAttachment(context, dataAsString, harAsString)
                             }
                         }
                     }
@@ -93,40 +109,78 @@ fun DebugMenu(
     }
 }
 
-private fun shareDebugInfoAsFileAttachment(context: Context, data: String, fileName: String = "debug_info.json") {
-    saveFileToMediaStore(context, data, fileName)?.let { contentUri ->
-        val sendIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "application/json"
-            putExtra(Intent.EXTRA_SUBJECT, "Debug Info")
-            putExtra(Intent.EXTRA_TEXT, "Please find the debug info attached.")
-            putExtra(Intent.EXTRA_STREAM, contentUri) // Use the MediaStore-generated URI
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // Grant read permission
-        }
+private const val mimeType = "application/octet-stream"
 
-        context.startActivity(Intent.createChooser(sendIntent, "Send Debug Info"))
-    } ?: run {
-        Timber.e("Failed to prepare the file for sharing")
+private fun shareDebugInfoAsFileAttachment(context: Context, combined: String, har: String) {
+    val combinedFile = "debug_info.json"
+    val combinedUri = saveFileToMediaStore(context, combined, combinedFile)
+    val harFile = "network.har"
+    val harUri = saveFileToMediaStore(context, har, harFile)
+
+    if (combinedUri == null || harUri == null) {
+        Timber.e("Failed to create the files for sharing")
+        return
     }
 
-    // TODO: call this only after file share is complete
-    // context.contentResolver.delete(contentUri, null, null)
+    val sendIntent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+        type = mimeType
+        putExtra(Intent.EXTRA_SUBJECT, "Debug Info")
+        putExtra(Intent.EXTRA_TEXT, "Please find the debug info attached.")
+        putParcelableArrayListExtra(
+            Intent.EXTRA_STREAM,
+            ArrayList(listOf(combinedUri, harUri))
+        )
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // Grant read permission
+    }
+
+    context.startActivity(Intent.createChooser(sendIntent, "Send Debug Info"))
 }
 
 private fun saveFileToMediaStore(context: Context, data: String, fileName: String): Uri? {
-    val contentValues = ContentValues().apply {
-        put(MediaStore.Files.FileColumns.DISPLAY_NAME, fileName)
-        put(MediaStore.Files.FileColumns.MIME_TYPE, "application/json")
-        put(/* key = */ MediaStore.Files.FileColumns.RELATIVE_PATH, /* value = */ Environment.DIRECTORY_DOCUMENTS) // Target path
+    val contentResolver = context.contentResolver
+
+    val targetPath = Environment.DIRECTORY_DOCUMENTS
+
+    val existingFileUri = contentResolver.query(
+        MediaStore.Files.getContentUri("external"),
+        arrayOf(MediaStore.Files.FileColumns._ID),
+        "${MediaStore.Files.FileColumns.DISPLAY_NAME} = ? AND ${MediaStore.Files.FileColumns.RELATIVE_PATH} = ?",
+        arrayOf(fileName, targetPath),
+        null
+    )?.use { cursor ->
+        if (cursor.moveToFirst()) {
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID))
+            ContentUris.withAppendedId(MediaStore.Files.getContentUri("external"), id)
+        } else {
+            null
+        }
     }
 
-    val contentUri = context.contentResolver.insert(
+    existingFileUri?.let {
+        contentResolver.delete(it, null, null)
+    }
+
+    // Fallback: Delete directly from the file system if the file still exists
+    val fallbackFile = File(Environment.getExternalStoragePublicDirectory(targetPath), fileName)
+    if (fallbackFile.exists()) {
+        fallbackFile.delete()
+    }
+
+    // Create a new file
+    val contentValues = ContentValues().apply {
+        put(MediaStore.Files.FileColumns.DISPLAY_NAME, fileName)
+        put(MediaStore.Files.FileColumns.MIME_TYPE, mimeType)
+        put(MediaStore.Files.FileColumns.RELATIVE_PATH, targetPath)
+    }
+
+    val contentUri = contentResolver.insert(
         MediaStore.Files.getContentUri("external"),
         contentValues
     )
 
     return if (contentUri != null) {
         try {
-            context.contentResolver.openOutputStream(contentUri)?.use { outputStream ->
+            contentResolver.openOutputStream(contentUri)?.use { outputStream ->
                 outputStream.write(data.toByteArray(Charsets.UTF_8))
             }
             contentUri

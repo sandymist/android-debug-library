@@ -4,19 +4,29 @@ import com.sandymist.android.debuglib.utils.decompressString
 import com.sandymist.android.debuglib.utils.isContentTypeJson
 import com.sandymist.android.debuglib.utils.isPrintable
 import com.sandymist.android.debuglib.utils.prettyPrintJson
+import io.objectbox.annotation.Convert
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
+import io.objectbox.converter.PropertyConverter
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+@Entity
 @Serializable
 data class HarEntry(
-    val id: String,
+    @Id
+    var id: Long = 0,
     val startedDateTime: String, // ISO 8601 timestamp
     val time: Long, // Total time in milliseconds
+    @Convert(converter = HarRequestConverter::class, dbType = String::class)
     val request: HarRequest,
+    @Convert(converter = HarResponseConverter::class, dbType = String::class)
     val response: HarResponse,
-    val cache: HarCache = HarCache(),
+//    val cache: HarCache = HarCache(),
+    @Convert(converter = HarTimingsConverter::class, dbType = String::class)
     val timings: HarTimings,
-    val serverIPAddress: String? = null, // Optional
+//    val serverIPAddress: String? = null, // Optional
     val connection: String? = null, // Optional
     val createdAt: Long = System.currentTimeMillis(),
 ) {
@@ -92,20 +102,6 @@ data class HarContent(
 }
 
 @Serializable
-data class HarCache(
-    val beforeRequest: HarCacheEntry? = null, // State before request
-    val afterRequest: HarCacheEntry? = null, // State after request
-    val expires: String? = null // Expiry time, if available
-)
-
-@Serializable
-data class HarCacheEntry(
-    val lastAccess: String? = null, // Last access time
-    val eTag: String? = null, // ETag
-    val hitCount: Int? = null // Cache hit count
-)
-
-@Serializable
 data class HarTimings(
     val blocked: Long = -1, // Time blocked (in ms), -1 if unknown
     val dns: Long = -1, // DNS resolution time (in ms), -1 if unknown
@@ -115,3 +111,39 @@ data class HarTimings(
     val receive: Long = 0, // Time to receive the response
     val ssl: Long = -1 // SSL handshake time, -1 if not applicable
 )
+
+class HarRequestConverter : PropertyConverter<HarRequest, String> {
+    private val json = Json { ignoreUnknownKeys = true }
+
+    override fun convertToDatabaseValue(entityProperty: HarRequest): String {
+        return json.encodeToString(entityProperty)
+    }
+
+    override fun convertToEntityProperty(databaseValue: String): HarRequest {
+        return json.decodeFromString(databaseValue)
+    }
+}
+
+class HarResponseConverter : PropertyConverter<HarResponse, String> {
+    private val json = Json { ignoreUnknownKeys = true }
+
+    override fun convertToDatabaseValue(entityProperty: HarResponse): String {
+        return json.encodeToString(entityProperty)
+    }
+
+    override fun convertToEntityProperty(databaseValue: String): HarResponse {
+        return json.decodeFromString(databaseValue)
+    }
+}
+
+class HarTimingsConverter : PropertyConverter<HarTimings, String> {
+    private val json = Json { ignoreUnknownKeys = true }
+
+    override fun convertToDatabaseValue(entityProperty: HarTimings): String {
+        return json.encodeToString(entityProperty)
+    }
+
+    override fun convertToEntityProperty(databaseValue: String): HarTimings {
+        return json.decodeFromString(databaseValue)
+    }
+}

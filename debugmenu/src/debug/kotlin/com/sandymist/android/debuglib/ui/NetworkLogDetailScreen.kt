@@ -16,15 +16,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sandymist.android.debuglib.model.NetworkLog
+import com.sandymist.android.debuglib.model.HarEntry
 
 @Suppress("unused")
 @Composable
 fun NetworkLogDetailScreen(
     modifier: Modifier = Modifier,
-    getNetworkLog: suspend () -> NetworkLog,
+    getNetworkLog: suspend () -> HarEntry,
 ) {
-    var networkLog: NetworkLog? by remember { mutableStateOf(null) }
+    var networkLog: HarEntry? by remember { mutableStateOf(null) }
 
     LaunchedEffect(Unit) {
         networkLog = getNetworkLog()
@@ -46,11 +46,11 @@ fun NetworkLogDetailScreen(
         NetworkLogItemSummary(networkLog!!) {
         }
 
-        Headers("Request Headers", networkLog!!.requestHeaders)
-        Headers("Response Headers", networkLog!!.responseHeaders)
+        Headers("Request Headers", networkLog!!.request.headers.map { it.toString() })
+        Headers("Response Headers", networkLog!!.response.headers.map { it.toString() })
 
         Text("Body", style = MaterialTheme.typography.headlineMedium)
-        Text(networkLog!!.body)
+        Text(networkLog!!.response.content.toString())
     }
 }
 
@@ -64,28 +64,4 @@ fun Headers(title: String, headerList: List<String>) {
             DataItem(label = it)
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewNetworkLogGoodDetailScreen() {
-    val networkLog = NetworkLog(
-        id = "1",
-        responseCode = 201,
-        url = "--> GET https://www.omnycontent.com/d/programs/5e27a451-e6e6-4c51-aa03-a7370003783c/68621bca-f318-4ad9-90df-a82600035a72/image.jpg?t=1691192679&size=Large\n",
-        method = "GET",
-    )
-    NetworkLogDetailScreen(getNetworkLog = { networkLog })
-}
-
-@Preview
-@Composable
-fun PreviewNetworkLogBadDetailScreen() {
-    val networkLog =  NetworkLog(
-        id = "2",
-        responseCode = 403,
-        url = "https://api.podcastindex.org/api/1.0/podcasts/trending?lang=en-US&cat=technology",
-        method = "POST",
-    )
-    NetworkLogDetailScreen(getNetworkLog = { networkLog })
 }

@@ -1,6 +1,5 @@
 package com.sandymist.android.debuglib.utils
 
-import com.sandymist.android.debuglib.model.HarCache
 import com.sandymist.android.debuglib.model.HarContent
 import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.model.HarHeader
@@ -17,7 +16,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-import java.util.UUID
 
 object OkHTTPToHAR {
     fun convertOkHTTPToHAR(request: Request, response: Response, elapsedTime: Long): HarEntry {
@@ -82,12 +80,11 @@ object OkHTTPToHAR {
 
         // Generate HAR entry
         val harEntry = HarEntry(
-            id = UUID.randomUUID().toString(),
             startedDateTime = getIso8601Timestamp(),
             time = elapsedTime,
             request = harRequest,
             response = harResponse,
-            cache = HarCache(),
+//            cache = HarCache(),
             timings = HarTimings(
                 blocked = -1,
                 dns = -1,
@@ -97,7 +94,7 @@ object OkHTTPToHAR {
                 receive = 0,
                 ssl = -1
             ),
-            serverIPAddress = response.handshake()?.peerPrincipal()?.name,
+//            serverIPAddress = response.handshake()?.peerPrincipal()?.name,
             connection = response.header("Connection")
         )
 

@@ -5,17 +5,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import com.sandymist.android.debuglib.db.DebugLibDatabase
 import com.sandymist.android.debuglib.db.LogcatDao
-import com.sandymist.android.debuglib.db.LogcatEntity
-import com.sandymist.android.debuglib.db.NetworkLogDao
-import com.sandymist.android.debuglib.db.NetworkLogEntity
+import com.sandymist.android.debuglib.db.PreferencesDao
+import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.model.Logcat
-import com.sandymist.android.debuglib.model.NetworkLog
+import com.sandymist.android.debuglib.model.MyObjectBox
 import com.sandymist.android.debuglib.repository.LogcatRepository
 import com.sandymist.android.debuglib.repository.NetworkLogRepository
+import com.sandymist.android.debuglib.repository.PreferencesRepository
 import com.sandymist.android.debuglib.ui.viewmodel.LogcatViewModel
 import com.sandymist.android.debuglib.ui.viewmodel.LogcatViewModelFactory
 import com.sandymist.android.debuglib.ui.viewmodel.NetworkLogViewModel
 import com.sandymist.android.debuglib.ui.viewmodel.NetworkLogViewModelFactory
+import com.sandymist.android.debuglib.ui.viewmodel.PreferencesViewModel
+import com.sandymist.android.debuglib.ui.viewmodel.PreferencesViewModelFactory
+import io.objectbox.BoxStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -23,25 +26,32 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 object DebugLib {
-    private val networkLogFlow = MutableStateFlow<NetworkLog?>(null)
+    private val networkLogFlow = MutableStateFlow<HarEntry?>(null)
     private val logcatFlow = MutableStateFlow<Logcat?>(null)
     private val scope = CoroutineScope(Dispatchers.IO)
     private lateinit var database: DebugLibDatabase
-    private lateinit var networkLogDao: NetworkLogDao
     private lateinit var logcatDao: LogcatDao
+    private lateinit var preferencesDao: PreferencesDao
     private lateinit var networkLogRepository: NetworkLogRepository
     private lateinit var logcatRepository: LogcatRepository
+    private lateinit var preferencesRepository: PreferencesRepository
     lateinit var networkLogViewModel: NetworkLogViewModel
     lateinit var logcatViewModel: LogcatViewModel
+    lateinit var preferencesViewModel: PreferencesViewModel
     private val viewModelStore = ViewModelStore()
+    private lateinit var boxStore: BoxStore
 
     @Suppress("unused")
     fun init(context: Context) {
         database = DebugLibDatabase.getDatabase(context)
-        networkLogDao = database.networkLogDao()
         logcatDao = database.logcatDao()
-        networkLogRepository = NetworkLogRepository(networkLogDao)
+        preferencesDao = database.preferencesDao()
+        boxStore = MyObjectBox.builder()
+            .androidContext(context)
+            .build()
+        networkLogRepository = NetworkLogRepository(boxStore)
         logcatRepository = LogcatRepository(logcatDao)
+        preferencesRepository = PreferencesRepository(context, preferencesDao)
 
         val networkLogViewModelFactory = NetworkLogViewModelFactory(networkLogRepository)
         networkLogViewModel = ViewModelProvider(viewModelStore, networkLogViewModelFactory)[NetworkLogViewModel::class.java]
@@ -49,10 +59,13 @@ object DebugLib {
         val logcatViewModelFactory = LogcatViewModelFactory(logcatRepository)
         logcatViewModel = ViewModelProvider(viewModelStore, logcatViewModelFactory)[LogcatViewModel::class.java]
 
+        val preferencesViewModelFactory = PreferencesViewModelFactory(preferencesRepository)
+        preferencesViewModel = ViewModelProvider(viewModelStore, preferencesViewModelFactory)[PreferencesViewModel::class.java]
+
         scope.launch {
             networkLogFlow.collect { networkLog ->
                 networkLog?.let {
-                    networkLogDao.insert(NetworkLogEntity.fromNetworkLog(networkLog))
+                    networkLogRepository.insert(networkLog)
                 }
             }
         }
@@ -60,15 +73,15 @@ object DebugLib {
         scope.launch {
             logcatFlow.collect { logcat ->
                 logcat?.let {
-                    logcatDao.insert(LogcatEntity.fromLogcat(logcat))
+                    logcatRepository.insertLogcat(logcat)
                 }
             }
         }
     }
 
-    fun insertNetworkLog(networkLog: NetworkLog) {
+    fun insertNetworkLog(harEntry: HarEntry) {
         scope.launch {
-            networkLogFlow.emit(networkLog)
+            networkLogFlow.emit(harEntry)
         }
     }
 

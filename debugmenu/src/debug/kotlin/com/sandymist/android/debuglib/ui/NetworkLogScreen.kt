@@ -26,7 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sandymist.android.common.utilities.ageString
 import com.sandymist.android.common.utilities.debouncedClickable
-import com.sandymist.android.debuglib.model.NetworkLog
+import com.sandymist.android.debuglib.model.HarEntry
+//import com.sandymist.android.debuglib.model.NetworkLog
 import com.sandymist.android.debuglib.ui.viewmodel.NetworkLogViewModel
 
 @Suppress("unused")
@@ -34,7 +35,7 @@ import com.sandymist.android.debuglib.ui.viewmodel.NetworkLogViewModel
 fun NetworkLogScreen(
     modifier: Modifier = Modifier,
     networkLogViewModel: NetworkLogViewModel,
-    onClick: (String) -> Unit,
+    onClick: (Long) -> Unit,
 ) {
     val networkLog by networkLogViewModel.networkLogList.collectAsStateWithLifecycle()
 
@@ -65,8 +66,8 @@ fun NetworkLogScreen(
 @Composable
 fun NetworkLogList(
     modifier: Modifier = Modifier,
-    logList: List<NetworkLog>,
-    onClick: (String) -> Unit
+    logList: List<HarEntry>,
+    onClick: (Long) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -82,8 +83,8 @@ fun NetworkLogList(
 
 @Composable
 fun NetworkLogItemSummary(
-    networkLog: NetworkLog,
-    onClick: (String) -> Unit,
+    networkLog: HarEntry,
+    onClick: (Long) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -98,16 +99,16 @@ fun NetworkLogItemSummary(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = networkLog.responseCode.toString(),
-                color = if (networkLog.responseCode >= 400) Color.Red else LocalContentColor.current,
+                text = networkLog.response.status.toString(),
+                color = if (networkLog.response.status >= 400) Color.Red else LocalContentColor.current,
                 fontWeight = FontWeight.Bold,
             )
-            Text(networkLog.method)
+            Text(networkLog.request.method)
         }
-        Text(text = networkLog.url, maxLines = 3, overflow = TextOverflow.Ellipsis)
+        Text(text = networkLog.request.url, maxLines = 3, overflow = TextOverflow.Ellipsis)
     }
 
-    val age = networkLog.timestamp / 1000
+    val age = networkLog.createdAt / 1000
     Text(
         text = age.ageString(),
         style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
@@ -117,26 +118,24 @@ fun NetworkLogItemSummary(
 
     HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(top = 4.dp))
 }
-
-@Preview
-@Composable
-fun PreviewNetworkLogScreen() {
-    val logList = listOf(
-        NetworkLog(
-            id = "1",
-            responseCode = 201,
-            url = "--> GET https://www.omnycontent.com/d/programs/5e27a451-e6e6-4c51-aa03-a7370003783c/68621bca-f318-4ad9-90df-a82600035a72/image.jpg?t=1691192679&size=Large\n",
-            method = "GET",
-        ),
-        NetworkLog(
-            id = "2",
-            responseCode = 403,
-            url = "https://api.podcastindex.org/api/1.0/podcasts/trending?lang=en-US&cat=technology",
-            method = "POST",
-        ),
-    )
-    NetworkLogList(logList = logList) {}
-}
+//
+//@Preview
+//@Composable
+//fun PreviewNetworkLogScreen() {
+//    val logList = listOf(
+//        NetworkLog(
+//            responseCode = 201,
+//            url = "--> GET https://www.omnycontent.com/d/programs/5e27a451-e6e6-4c51-aa03-a7370003783c/68621bca-f318-4ad9-90df-a82600035a72/image.jpg?t=1691192679&size=Large\n",
+//            method = "GET",
+//        ),
+//        NetworkLog(
+//            responseCode = 403,
+//            url = "https://api.podcastindex.org/api/1.0/podcasts/trending?lang=en-US&cat=technology",
+//            method = "POST",
+//        ),
+//    )
+//    NetworkLogList(logList = logList) {}
+//}
 
 @Preview
 @Composable

@@ -9,10 +9,17 @@ import java.io.FileNotFoundException
 private const val DB_VERSION = 2
 private const val DB_NAME = "debug_lib_database"
 
-@Database(entities = [NetworkLogEntity::class, LogcatEntity::class], version = DB_VERSION, exportSchema = true)
+@Database(
+    entities = [
+        LogcatEntity::class,
+        PreferencesEntity::class,
+    ],
+    version = DB_VERSION,
+    exportSchema = true,
+)
 abstract class DebugLibDatabase : RoomDatabase() {
-    abstract fun networkLogDao(): NetworkLogDao
     abstract fun logcatDao(): LogcatDao
+    abstract fun preferencesDao(): PreferencesDao
 
     companion object {
         @Volatile

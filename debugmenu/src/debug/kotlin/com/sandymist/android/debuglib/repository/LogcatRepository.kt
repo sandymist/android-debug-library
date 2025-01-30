@@ -41,6 +41,8 @@ class LogcatRepository(
         logcatDao.getAllEntities().map { it.toLogcat() }
     }.await()
 
+    suspend fun insertLogcat(logcat: Logcat) = logcatDao.insert(LogcatEntity.fromLogcat(logcat))
+
     fun clear() {
         scope.launch {
             logcatDao.clearAll()

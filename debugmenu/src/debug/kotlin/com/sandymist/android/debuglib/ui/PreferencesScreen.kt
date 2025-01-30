@@ -1,8 +1,5 @@
-@file:Suppress("DEPRECATION")
 package com.sandymist.android.debuglib.ui
 
-import android.content.Context
-import android.preference.PreferenceManager
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,57 +11,23 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.File
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sandymist.android.debuglib.model.PrefItem
+import com.sandymist.android.debuglib.ui.viewmodel.PreferencesViewModel
 
 @Suppress("unused")
 @Composable
 fun PreferencesScreen(
     modifier: Modifier = Modifier,
+    preferencesViewModel: PreferencesViewModel,
 ) {
-    val context = LocalContext.current
-    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-    val items = remember { mutableStateListOf<PrefItem>() }
-
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            val defaultPrefs = sharedPreferences.all
-            if (defaultPrefs.isNotEmpty()) {
-                items.add(PrefItem.Header("Default"))
-            }
-            val sharedPrefsDir = File(context.filesDir.parent, "shared_prefs")
-            if (sharedPrefsDir.exists() && sharedPrefsDir.isDirectory) {
-                val sharedPrefsFiles = sharedPrefsDir.listFiles()
-                sharedPrefsFiles?.forEach { file ->
-                    val prefsName = file.nameWithoutExtension
-                    items.add(PrefItem.Header(prefsName))
-                    val sharedPrefs = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-                    val allEntries = sharedPrefs.all
-                    for ((key, value) in allEntries) {
-                        items.add(PrefItem.Data(key, value?.toString() ?: "Not set"))
-                    }
-                }
-            }
-
-            val dataStoreDir = File(context.filesDir, "datastore")
-            if (dataStoreDir.exists() && dataStoreDir.isDirectory) {
-                val dataStoreFiles = dataStoreDir.listFiles()
-                dataStoreFiles?.forEach { file ->
-                    println("DataStore file: ${file.name}")
-                }
-            }
-        }
-    }
+    val items by preferencesViewModel.preferencesList.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -109,9 +72,4 @@ fun PreferencesList(preferences: List<PrefItem>) {
             }
         }
     }
-}
-
-sealed interface PrefItem {
-    data class Header(val title: String): PrefItem
-    data class Data(val key: String, val value: String): PrefItem
 }

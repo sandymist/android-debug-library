@@ -5,6 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.25"
     id("dagger.hilt.android.plugin")
     id("kotlin-parcelize")
+    id("io.objectbox")
     id("maven-publish")
 }
 
@@ -113,6 +114,10 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    // object box
+    implementation(libs.objectbox.kotlin)
+    kapt(libs.objectbox.processor)
 
     implementation(libs.timber)
     implementation(libs.android.utilities)

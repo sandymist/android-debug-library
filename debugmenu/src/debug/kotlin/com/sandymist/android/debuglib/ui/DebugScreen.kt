@@ -37,10 +37,10 @@ fun DebugScreen(
         composable(
             route = "network-log-detail/{id}",
             arguments = listOf(
-                navArgument("id") { type = NavType.StringType },
+                navArgument("id") { type = NavType.LongType },
             )
         ) {
-            val id = it.arguments?.getString("id") ?: ""
+            val id = it.arguments?.getLong("id") ?: -1
 
             NetworkLogDetailScreen(
                 modifier = modifier,
@@ -51,7 +51,10 @@ fun DebugScreen(
             )
         }
         composable("preferences") {
-            PreferencesScreen(modifier = modifier)
+            PreferencesScreen(
+                modifier = modifier,
+                preferencesViewModel = DebugLib.preferencesViewModel,
+            )
         }
         composable("datastore") {
             DataStoreScreen(modifier = modifier)
