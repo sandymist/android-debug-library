@@ -11,11 +11,11 @@ interceptor {
 }
 
 android {
-    namespace = "com.sandymist.android.debugassistant.demo"
+    namespace = "com.sandymist.android.debuglib.demo"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.sandymist.android.debugassistant"
+        applicationId = "com.sandymist.android.debuglib.demo"
         minSdk = 25
         targetSdk = 35
         versionCode = 1

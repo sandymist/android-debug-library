@@ -6,7 +6,7 @@
             android:name="com.sandymist.android.debuglib.ui.DebugActivity"
             android:exported="true"
             android:label="@string/title_activity_debug"
-            android:theme="@style/Theme.DebugAssistant"
+            android:theme="@style/Theme.DebugLibDemo"
             tools:replace="android:theme"
             />
     </application>

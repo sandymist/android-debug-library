@@ -1,4 +1,4 @@
-package com.sandymist.android.debugassistant
+package com.sandymist.android.debuglib.demo
 
 import android.app.Application
 import com.sandymist.android.debuglib.DebugLib

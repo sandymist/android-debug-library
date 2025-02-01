@@ -2,7 +2,7 @@
 agp = "8.3.2" # upgrade causes hilt to break
 androidUtilities = "0.0.8"
 datastoreVersion = "1.1.1"
-deviceMonitor = "0.0.1"
+deviceMonitor = "0.0.2"
 hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.25"

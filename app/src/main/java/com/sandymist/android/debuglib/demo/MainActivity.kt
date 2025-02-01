@@ -1,4 +1,4 @@
-package com.sandymist.android.debugassistant.demo
+package com.sandymist.android.debuglib.demo
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import com.sandymist.android.debugassistant.ui.theme.DebugAssistantTheme
+import com.sandymist.android.debuglib.demo.theme.DebugLibDemoTheme
 import com.sandymist.android.debuglib.ui.DebugScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
         generateTraffic()
 
         setContent {
-            DebugAssistantTheme {
+            DebugLibDemoTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     DebugScreen(modifier = Modifier.padding(innerPadding))
                 }

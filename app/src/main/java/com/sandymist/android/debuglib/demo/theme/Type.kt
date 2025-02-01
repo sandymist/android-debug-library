@@ -1,4 +1,4 @@
-package com.sandymist.android.debugassistant.ui.theme
+package com.sandymist.android.debuglib.demo.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

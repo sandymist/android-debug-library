@@ -1,4 +1,4 @@
-package com.sandymist.android.debugassistant.ui.theme
+package com.sandymist.android.debuglib.demo.theme
 
 import androidx.compose.ui.graphics.Color
 

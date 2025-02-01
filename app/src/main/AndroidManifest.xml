@@ -12,13 +12,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name="com.sandymist.android.debugassistant.DemoApp"
-        android:theme="@style/Theme.DebugAssistant"
+        android:name=".DemoApp"
+        android:theme="@style/Theme.DebugLibDemo"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.DebugAssistant">
+            android:theme="@style/Theme.DebugLibDemo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

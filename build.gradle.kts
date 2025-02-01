@@ -16,4 +16,4 @@ plugins {
     id("com.sandymist.mobile.plugin.interceptor") version "0.1.3" apply false
 }
 
-val projectVersion: String by extra("0.0.3")
+val projectVersion: String by extra("0.0.2")

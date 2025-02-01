@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.sandymist.android.debuglib.ui.ui.theme.DebugAssistantTheme
+import com.sandymist.android.debuglib.ui.ui.theme.DebugLibTheme
 
 class DebugActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,7 +16,7 @@ class DebugActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            DebugAssistantTheme {
+            DebugLibTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     DebugScreen(modifier = Modifier.padding(innerPadding))
                 }

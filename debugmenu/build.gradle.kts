@@ -29,9 +29,6 @@ android {
         }
         named("debug") {
         }
-        maybeCreate("qa").apply {
-            initWith(getByName("debug")) // Optional: inherit configurations from debug
-        }
     }
 
     sourceSets {
@@ -45,13 +42,6 @@ android {
         getByName("release") {
             java.srcDirs("src/release/kotlin")
             // You can customize release-specific source directories here
-        }
-
-        // Configure the qa source set
-        getByName("qa") {
-            java.srcDirs("src/debug/kotlin") // Use src/qa/kotlin for QA build type
-            // If QA should use the same resources as Debug, you can add that as well:
-            res.srcDirs("src/debug/res")
         }
     }
 
@@ -126,7 +116,7 @@ dependencies {
 
 configure<PublishingExtension> {
     publications.create<MavenPublication>("debug") {
-        groupId = "com.github.sandymist.android-debug-assistant"
+        groupId = "com.github.sandymist.android-debug-lib"
         artifactId = "debugmenu-debug"
         version = rootProject.extra["projectVersion"] as String
         afterEvaluate {
@@ -134,17 +124,8 @@ configure<PublishingExtension> {
         }
     }
 
-    publications.create<MavenPublication>("qa") {
-        groupId = "com.github.sandymist.android-debug-assistant"
-        artifactId = "debugmenu-qa"
-        version = rootProject.extra["projectVersion"] as String
-        afterEvaluate {
-            from(components["qa"])
-        }
-    }
-
     publications.create<MavenPublication>("no-op") {
-        groupId = "com.github.sandymist.android-debug-assistant"
+        groupId = "com.github.sandymist.android-debug-lib"
         artifactId = "debugmenu-no-op"
         version = rootProject.extra["projectVersion"] as String
         afterEvaluate {
