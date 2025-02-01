@@ -64,7 +64,7 @@ dependencies {
 
     // for testing
     implementation(libs.okhttp)
-    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0") // Use the latest version
+    implementation(libs.logging.interceptor.v4110) // Use the latest version
 
     // timber
     implementation(libs.timber)

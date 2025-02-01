@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class ExportData(
     val networkLogList: List<HarEntry>,
     val logcatList: List<Logcat>,
-    val preferencesList: List<PrefItem>,
+    val preferencesList: List<DataListItem>,
 )

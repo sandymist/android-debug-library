@@ -1,4 +1,4 @@
-package com.sandymist.android.debugassistant.interceptors
+package com.sandymist.android.debuglib.interceptors
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

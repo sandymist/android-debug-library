@@ -130,7 +130,7 @@ dependencies {
 
 configure<PublishingExtension> {
     publications.create<MavenPublication>("debug") {
-        groupId = "com.sandymist.android"
+        groupId = "com.github.sandymist.android-debug-assistant"
         artifactId = "debugmenu-debug"
         version = rootProject.extra["projectVersion"] as String
         afterEvaluate {
@@ -139,7 +139,7 @@ configure<PublishingExtension> {
     }
 
     publications.create<MavenPublication>("qa") {
-        groupId = "com.sandymist.android"
+        groupId = "com.github.sandymist.android-debug-assistant"
         artifactId = "debugmenu-qa"
         version = rootProject.extra["projectVersion"] as String
         afterEvaluate {
@@ -148,7 +148,7 @@ configure<PublishingExtension> {
     }
 
     publications.create<MavenPublication>("no-op") {
-        groupId = "com.sandymist.android"
+        groupId = "com.github.sandymist.android-debug-assistant"
         artifactId = "debugmenu-no-op"
         version = rootProject.extra["projectVersion"] as String
         afterEvaluate {

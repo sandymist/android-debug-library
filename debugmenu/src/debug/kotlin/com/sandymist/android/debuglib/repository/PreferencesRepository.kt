@@ -6,7 +6,7 @@ import android.preference.PreferenceManager
 import com.sandymist.android.debuglib.db.PreferencesDao
 import com.sandymist.android.debuglib.db.PreferencesEntity
 import com.sandymist.android.debuglib.model.PrefData
-import com.sandymist.android.debuglib.model.PrefItem
+import com.sandymist.android.debuglib.model.DataListItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -19,19 +19,19 @@ class PreferencesRepository(
     context: Context,
     private val preferencesDao: PreferencesDao,
 ) {
-    private val _prefList = MutableStateFlow<List<PrefItem>>(emptyList())
+    private val _prefList = MutableStateFlow<List<DataListItem>>(emptyList())
     val prefList = _prefList.asStateFlow()
     private val scope = CoroutineScope(Dispatchers.IO)
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     init {
         scope.launch {
-            val items = mutableListOf<PrefItem>()
+            val items = mutableListOf<DataListItem>()
             val defaultPrefs = sharedPreferences.all
             if (defaultPrefs.isNotEmpty()) {
-                items.add(PrefItem.Header("Default"))
+                items.add(DataListItem.Header("Default"))
                 defaultPrefs.forEach { (key, value) ->
-                    items.add(PrefItem.Data(key, value.toString()))
+                    items.add(DataListItem.Data(key, value.toString()))
                 }
             }
 
@@ -40,22 +40,22 @@ class PreferencesRepository(
                 val sharedPrefsFiles = sharedPrefsDir.listFiles()
                 sharedPrefsFiles?.forEach { file ->
                     val prefsName = file.nameWithoutExtension
-                    items.add(PrefItem.Header(prefsName))
+                    items.add(DataListItem.Header(prefsName))
                     val sharedPrefs = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
                     val allEntries = sharedPrefs.all
                     for ((key, value) in allEntries) {
-                        items.add(PrefItem.Data(key, value?.toString() ?: "Not set"))
+                        items.add(DataListItem.Data(key, value?.toString() ?: "Not set"))
                     }
                 }
             }
 
             preferencesDao.insertAll(items.map {
                 when (it) {
-                    is PrefItem.Header -> {
+                    is DataListItem.Header -> {
                         val data = PrefData(name = it.title, value = "", type = "header")
                         PreferencesEntity.fromPrefData(data)
                     }
-                    is PrefItem.Data -> {
+                    is DataListItem.Data -> {
                         val data = PrefData(name = it.key, value = it.value, type = "")
                         PreferencesEntity.fromPrefData(data)
                     }

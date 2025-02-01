@@ -2,17 +2,24 @@ package com.sandymist.android.debuglib.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.sandymist.android.debuglib.DebugLib
+import com.sandymist.android.debuglib.devicemonitor.DeviceMonitor
+import com.sandymist.android.debuglib.devicemonitor.MonitorScreen
+import com.sandymist.android.debuglib.devicemonitor.audio.AudioMonitor
+import com.sandymist.android.debuglib.devicemonitor.network.NetworkMonitor
+import com.sandymist.android.debuglib.devicemonitor.power.PowerMonitor
 
 @Composable
 fun DebugScreen(
      modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "debug-menu") {
@@ -59,8 +66,22 @@ fun DebugScreen(
         composable("datastore") {
             DataStoreScreen(modifier = modifier)
         }
-        composable("summary") {
-            SummaryScreen(modifier = modifier)
+        composable("room") {
+            RoomScreen(modifier = modifier)
+        }
+        composable("device-monitor") {
+            val networkMonitor by lazy { NetworkMonitor.getInstance(context) }
+            val powerMonitor by lazy { PowerMonitor.getInstance(context) }
+            val audioMonitor by lazy { AudioMonitor.getInstance(context) }
+            val deviceMonitor by lazy { DeviceMonitor(context) }
+
+            MonitorScreen(
+                modifier = modifier,
+                networkMonitor = networkMonitor,
+                powerMonitor = powerMonitor,
+                audioMonitor = audioMonitor,
+                deviceMonitor = deviceMonitor,
+            )
         }
     }
 }

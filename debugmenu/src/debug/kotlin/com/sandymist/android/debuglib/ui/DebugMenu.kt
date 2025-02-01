@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -57,7 +57,7 @@ fun DebugMenu(
         ) {
             Text("Debug screen", style = MaterialTheme.typography.headlineSmall)
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowUp, // TODO: change icon
+                imageVector = Icons.Outlined.Share,
                 contentDescription = "Export",
                 modifier = Modifier
                     .debouncedClickable {
@@ -105,8 +105,11 @@ fun DebugMenu(
 //        DataItem(label = "View DataStore", modifier = Modifier.debouncedClickable {
 //            navController.navigate("datastore")
 //        })
-        DataItem(label = "Summary", modifier = Modifier.debouncedClickable {
-            navController.navigate("summary")
+        DataItem(label = "Room", modifier = Modifier.debouncedClickable {
+            navController.navigate("room")
+        })
+        DataItem(label = "Device monitor", modifier = Modifier.debouncedClickable {
+            navController.navigate("device-monitor")
         })
     }
 }

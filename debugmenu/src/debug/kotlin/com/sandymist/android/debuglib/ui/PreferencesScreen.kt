@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sandymist.android.debuglib.model.PrefItem
+import com.sandymist.android.debuglib.model.DataListItem
 import com.sandymist.android.debuglib.ui.viewmodel.PreferencesViewModel
 
 @Suppress("unused")
@@ -54,18 +54,18 @@ fun PreferencesScreen(
 }
 
 @Composable
-fun PreferencesList(preferences: List<PrefItem>) {
+fun PreferencesList(preferences: List<DataListItem>) {
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 12.dp, vertical = 8.dp),
     ) {
         items(preferences) { item ->
             when (item) {
-                is PrefItem.Header -> {
+                is DataListItem.Header -> {
                     Text(item.title, style = MaterialTheme.typography.headlineSmall)
                     HorizontalDivider(color = Color.DarkGray)
                 }
-                is PrefItem.Data -> {
+                is DataListItem.Data -> {
                     DataItem(label = "${item.key}: ${item.value}")
 //                    HorizontalDivider(color = Color.LightGray)
                 }

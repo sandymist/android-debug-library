@@ -9,29 +9,29 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = PrefItemSerializer::class)
-sealed interface PrefItem {
+sealed interface DataListItem {
     @Serializable
-    data class Header(val title: String): PrefItem
+    data class Header(val title: String): DataListItem
     @Serializable
-    data class Data(val key: String, val value: String): PrefItem
+    data class Data(val key: String, val value: String = ""): DataListItem
 }
 
-object PrefItemSerializer : KSerializer<PrefItem> {
+object PrefItemSerializer : KSerializer<DataListItem> {
     override val descriptor: SerialDescriptor =
         buildClassSerialDescriptor("PrefItem") // Custom descriptor for the sealed interface
 
-    override fun serialize(encoder: Encoder, value: PrefItem) {
+    override fun serialize(encoder: Encoder, value: DataListItem) {
         when (value) {
-            is PrefItem.Header -> encoder.encodeSerializableValue(PrefItem.Header.serializer(), value)
-            is PrefItem.Data -> encoder.encodeSerializableValue(PrefItem.Data.serializer(), value)
+            is DataListItem.Header -> encoder.encodeSerializableValue(DataListItem.Header.serializer(), value)
+            is DataListItem.Data -> encoder.encodeSerializableValue(DataListItem.Data.serializer(), value)
         }
     }
 
-    override fun deserialize(decoder: Decoder): PrefItem {
+    override fun deserialize(decoder: Decoder): DataListItem {
         val input = decoder.beginStructure(descriptor)
         return when (val index = input.decodeElementIndex(descriptor)) {
-            0 -> input.decodeSerializableElement(descriptor, index, PrefItem.Header.serializer())
-            1 -> input.decodeSerializableElement(descriptor, index, PrefItem.Data.serializer())
+            0 -> input.decodeSerializableElement(descriptor, index, DataListItem.Header.serializer())
+            1 -> input.decodeSerializableElement(descriptor, index, DataListItem.Data.serializer())
             else -> throw SerializationException("Unexpected index $index")
         }.also { input.endStructure(descriptor) }
     }

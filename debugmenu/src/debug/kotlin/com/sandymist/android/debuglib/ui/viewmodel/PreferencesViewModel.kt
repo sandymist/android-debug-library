@@ -2,7 +2,7 @@ package com.sandymist.android.debuglib.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.sandymist.android.debuglib.model.PrefItem
+import com.sandymist.android.debuglib.model.DataListItem
 import com.sandymist.android.debuglib.repository.PreferencesRepository
 
 class PreferencesViewModel (
@@ -12,9 +12,9 @@ class PreferencesViewModel (
 
     suspend fun getAllPreferenceEntries() = preferencesRepository.getAllPreferencesEntries().map {
         if (it.type == "header") {
-            PrefItem.Header(title = it.name)
+            DataListItem.Header(title = it.name)
         } else {
-            PrefItem.Data(key = it.name, value = it.value)
+            DataListItem.Data(key = it.name, value = it.value)
         }
     }
 

@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.sandymist.android.debuglib.model.PrefItem
+import com.sandymist.android.debuglib.model.DataListItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
@@ -39,13 +39,13 @@ fun DataStoreScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val items = remember { mutableStateListOf<PrefItem>() }
+    val items = remember { mutableStateListOf<DataListItem>() }
 
     LaunchedEffect(Unit) {
         readDataStore(context).collectLatest {
-            items.add(PrefItem.Header(it.first))
+            items.add(DataListItem.Header(it.first))
             it.second.forEach { (t, u) ->
-                items.add(PrefItem.Data(t, u.toString()))
+                items.add(DataListItem.Data(t, u.toString()))
             }
         }
     }
@@ -75,18 +75,18 @@ fun DataStoreScreen(
 }
 
 @Composable
-fun DataStoreList(preferences: List<PrefItem>) {
+fun DataStoreList(preferences: List<DataListItem>) {
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 12.dp, vertical = 8.dp),
     ) {
         items(preferences) { item ->
             when (item) {
-                is PrefItem.Header -> {
+                is DataListItem.Header -> {
                     Text(item.title, style = MaterialTheme.typography.headlineSmall)
                     HorizontalDivider(color = Color.DarkGray)
                 }
-                is PrefItem.Data -> {
+                is DataListItem.Data -> {
                     DataItem(label = "${item.key}: ${item.value}")
                 }
             }
