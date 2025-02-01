@@ -1,13 +1,8 @@
 [versions]
 agp = "8.3.2" # upgrade causes hilt to break
-android = "3.3.3"
 androidUtilities = "0.0.8"
-coilComposeVersion = "2.6.0"
-constraintLayoutVersion = "1.1.0"
 datastoreVersion = "1.1.1"
-debugmenu = "0.0.14"
-firebaseBom = "33.7.0"
-firebaseFirestore = "25.1.1"
+deviceMonitor = "0.0.1"
 hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.25"
@@ -18,13 +13,8 @@ espressoCore = "3.6.1"
 kotlinxSerializationJson = "1.6.0"
 lifecycleRuntimeKtx = "2.8.7"
 loggingInterceptorVersion = "4.11.0"
-materialIconsExtendedVersion = "1.7.6"
 activityCompose = "1.9.3"
 composeBom = "2024.12.01"
-loggingInterceptor = "4.12.0"
-material3Version = "1.3.1"
-media3Exoplayer = "1.5.0"
-mockk = "1.13.13"
 objectboxGradlePlugin = "4.0.3"
 objectboxKotlin = "4.0.3"
 objectboxProcessor = "3.8.1"
@@ -32,34 +22,17 @@ okhttp = "4.12.0"
 retrofit = "2.11.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
 roomRuntime = "2.6.1"
-splashscreenVersion = "1.0.1"
-tikaCore = "2.9.0"
 timber = "5.0.1"
 
 [libraries]
 android-utilities = { module = "com.github.saravr:android-utilities", version.ref = "androidUtilities" }
-androidx-constraint-layout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintLayoutVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastoreVersion" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtendedVersion" }
-androidx-media3-common = { module = "androidx.media3:media3-common", version.ref = "media3Exoplayer" }
-androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
-androidx-media3-exoplayer-hls = { module = "androidx.media3:media3-exoplayer-hls", version.ref = "media3Exoplayer" }
-androidx-media3-session = { module = "androidx.media3:media3-session", version.ref = "media3Exoplayer" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
-androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
-bugfender-android = { module = "com.bugfender.sdk:android", version.ref = "android" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
-debugmenu = { module = "com.github.saravr:android-debug-assistant", version.ref = "debugmenu" }
-#debugmenu = { module = "com.sandymist.android:debugmenu", version.ref = "debugmenu" }
-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-firebase-config-ktx = { module = "com.google.firebase:firebase-config-ktx" }
-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
-firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestore" }
+device-monitor = { module = "com.github.sandymist:android-device-monitor", version.ref = "deviceMonitor" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -68,7 +41,6 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-compose-material3-windowsizeclass = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3Version" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -77,21 +49,15 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 logging-interceptor-v4110 = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptorVersion" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 objectbox-gradle-plugin = { module = "io.objectbox:objectbox-gradle-plugin", version.ref = "objectboxGradlePlugin" }
 objectbox-kotlin = { module = "io.objectbox:objectbox-kotlin", version.ref = "objectboxKotlin" }
 objectbox-processor = { module = "io.objectbox:objectbox-processor", version.ref = "objectboxProcessor" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreenVersion" }
-tika-core = { module = "org.apache.tika:tika-core", version.ref = "tikaCore" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

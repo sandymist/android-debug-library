@@ -35,12 +35,6 @@ android {
     }
 
     sourceSets {
-//        // Configure the main source set (common for all)
-//        main {
-//            java.srcDirs("src/main/kotlin")
-//            // Add other necessary directories like resources, etc.
-//        }
-
         // Configure the debug source set
         getByName("debug") {
             java.srcDirs("src/debug/kotlin")
@@ -96,6 +90,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    debugImplementation(libs.device.monitor)
 
     // dagger/hilt
     implementation(libs.hilt.android)
