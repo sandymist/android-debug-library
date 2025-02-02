@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "android-debug-lib"
+rootProject.name = "android-debug-library"
 include(":app")
-include(":debugmenu")
+include(":debuglib")

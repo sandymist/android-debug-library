@@ -42,3 +42,33 @@ The library uses an ASM based gradle plugin to intercept OkHTTP traffic (no need
 ## Share the collected information
 
 <img src="assets/share.png" alt="Share debug information" width="200" height="400">
+
+# How to use
+
+Add to repositories
+
+```
+    repositories {
+        maven { url = uri("https://jitpack.io") }
+    }
+```
+
+Add to root project gradle file
+```
+plugins {
+    id("com.sandymist.mobile.plugin.interceptor") version "0.1.3" apply false
+}
+```
+
+Add to app gradle file as follows
+
+```
+    plugins {
+        id("com.sandymist.mobile.plugin.interceptor")
+    }
+
+    dependencies {
+        debugImplementation("com.github.sandymist.android-debug-library:debuglib-debug:<version>")
+        releaseImplementation("com.github.sandymist.android-debug-library:debuglib-no-op:<version>")
+    }
+```
