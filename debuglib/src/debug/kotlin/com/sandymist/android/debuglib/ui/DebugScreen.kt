@@ -68,5 +68,12 @@ fun DebugScreen(
                 modifier = modifier,
             )
         }
+        composable("memory-info") {
+            MemoryInfoScreen(modifier = modifier)
+        }
+        composable("build-info") {
+            BranchInfoScreen(modifier = modifier)
+        }
+
     }
 }
