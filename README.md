@@ -72,3 +72,22 @@ Add to app gradle file as follows
         releaseImplementation("com.github.sandymist.android-debug-library:debuglib-no-op:<version>")
     }
 ```
+
+Integrate Debug menu into the app's UI
+
+Option 1: Call the composable function directly.
+
+```
+    import com.sandymist.android.debuglib.ui.DebugScreen
+
+    DebugScreen(modifier: Modifier)
+```
+
+Option 2: Launch the DebugActivity (non-Jetpack-Compose apps)
+
+```
+    import com.sandymist.android.debuglib.ui.DebugActivity
+
+    val intent = Intent(context, DebugActivity::class.java)
+    context.startActivity(intent)
+```
