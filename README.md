@@ -45,6 +45,7 @@ The library uses an ASM based gradle plugin to intercept OkHTTP traffic (no need
 
 # How to use
 
+## Gradle changes
 Add to repositories
 
 ```
@@ -67,13 +68,27 @@ Add to app gradle file as follows
         id("com.sandymist.mobile.plugin.interceptor")
     }
 
+    interceptor {
+        targetClassName = "com.sandymist.mobile.plugins.network.NetworkPlugin"
+    }
+
     dependencies {
         debugImplementation("com.github.sandymist.android-debug-library:debuglib-debug:<version>")
         releaseImplementation("com.github.sandymist.android-debug-library:debuglib-no-op:<version>")
     }
 ```
 
-Integrate Debug menu into the app's UI
+## Code changes
+
+Integrate Debug menu into the app's UI.
+
+### Step 1: Add this line in Application onCreate() (in debug source set)
+
+```
+    DebugLib.init(this)
+```
+
+### Step 2: Add UI hook
 
 Option 1: Call the composable function directly.
 
