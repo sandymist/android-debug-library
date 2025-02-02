@@ -7,6 +7,11 @@ both developers and QA teams, it streamlines issue reporting and diagnostics dur
 development and testing. A key advantage of this library is that all debugging insights 
 are accessible directly on the device, eliminating the need for external tools.
 
+# Caution
+The information collected, stored and shared MAY contain sensitive information and/or 
+impact the privacy policy of the app. This library should STRICTLY be used only for 
+debugging purposes, and **NEVER in production**.
+
 # Features
 
 The debug information collected and reported include:
