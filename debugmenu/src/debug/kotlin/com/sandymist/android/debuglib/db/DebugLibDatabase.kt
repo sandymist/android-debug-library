@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import java.io.FileNotFoundException
 
 private const val DB_VERSION = 2
@@ -25,15 +26,26 @@ abstract class DebugLibDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: DebugLibDatabase? = null
 
+        private val callback = object : Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                db.execSQL(LOGCAT_LIMIT_ROWS)
+            }
+        }
+
         fun getDatabase(context: Context): DebugLibDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+                val builder = Room.databaseBuilder(
                     context.applicationContext,
                     DebugLibDatabase::class.java,
                     DB_NAME,
                 )
+
+                builder
+                    .addCallback(callback)
                     .fallbackToDestructiveMigration() // TODO: remove before launch
                     .build()
+                val instance = builder.build()
                 INSTANCE = instance
                 instance
             }

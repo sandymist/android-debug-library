@@ -4,7 +4,17 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sandymist.android.debuglib.model.Logcat
 
-@Entity(tableName = "logcat")
+const val LOGCAT_TABLE_NAME = "logcat"
+const val LOGCAT_MAX_ENTRIES = 1000 // TODO: make configurable
+
+val LOGCAT_LIMIT_ROWS = getRowLimitTrigger(
+    LOGCAT_TABLE_NAME,
+    "id",
+    "createdAt",
+    LOGCAT_MAX_ENTRIES,
+)
+
+@Entity(tableName = LOGCAT_TABLE_NAME)
 data class LogcatEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
