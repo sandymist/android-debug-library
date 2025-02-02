@@ -17,6 +17,8 @@ The debug information collected and reported include:
 - Shared preferences
 - Status of network, power, and audio systems
 
+The recorded information is persisted on the device, ensuring availability even after a crash.
+Note: To prevent excessive growth, older entries will be periodically purged.
 ## Network traffic
 
 The library uses an ASM based gradle plugin to intercept OkHTTP traffic (no need to add Interceptors manually).
