@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sandymist.android.debugmenu"
+    namespace = "com.sandymist.android.debuglib"
     compileSdk = 35
 
     defaultConfig {
@@ -116,8 +116,8 @@ dependencies {
 
 configure<PublishingExtension> {
     publications.create<MavenPublication>("debug") {
-        groupId = "com.github.sandymist.android-debug-lib"
-        artifactId = "debugmenu-debug"
+        groupId = "com.github.sandymist.android-debug-library"
+        artifactId = "debuglib-debug"
         version = rootProject.extra["projectVersion"] as String
         afterEvaluate {
             from(components["debug"])
@@ -125,8 +125,8 @@ configure<PublishingExtension> {
     }
 
     publications.create<MavenPublication>("no-op") {
-        groupId = "com.github.sandymist.android-debug-lib"
-        artifactId = "debugmenu-no-op"
+        groupId = "com.github.sandymist.android-debug-library"
+        artifactId = "debuglib-no-op"
         version = rootProject.extra["projectVersion"] as String
         afterEvaluate {
             from(components["release"])

@@ -30,7 +30,7 @@ class LogcatRepository(
             log = { log ->
                 scope.launch {
                     val logcat = Logcat(message = log)
-                    logcatDao.insert(LogcatEntity.fromLogcat(logcat))
+                    insertLogcat(logcat)
                 }
             },
             scope = scope
@@ -41,7 +41,11 @@ class LogcatRepository(
         logcatDao.getAllEntities().map { it.toLogcat() }
     }.await()
 
-    suspend fun insertLogcat(logcat: Logcat) = logcatDao.insert(LogcatEntity.fromLogcat(logcat))
+    fun insertLogcat(logcat: Logcat) {
+        scope.launch {
+            logcatDao.insert(LogcatEntity.fromLogcat(logcat))
+        }
+    }
 
     fun clear() {
         scope.launch {

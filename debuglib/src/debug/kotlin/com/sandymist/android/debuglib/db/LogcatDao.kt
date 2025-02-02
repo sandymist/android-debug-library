@@ -10,12 +10,12 @@ interface LogcatDao {
     @Insert
     suspend fun insert(entity: LogcatEntity)
 
-    @Query("SELECT * FROM logcat ORDER BY createdAt DESC")
+    @Query("SELECT * FROM $LOGCAT_TABLE_NAME ORDER BY createdAt DESC")
     fun getAll(): Flow<List<LogcatEntity>>
 
-    @Query("SELECT * FROM logcat ORDER BY createdAt DESC")
+    @Query("SELECT * FROM $LOGCAT_TABLE_NAME ORDER BY createdAt DESC")
     suspend fun getAllEntities(): List<LogcatEntity>
 
-    @Query("DELETE FROM logcat")
+    @Query("DELETE FROM $LOGCAT_TABLE_NAME")
     suspend fun clearAll()
 }

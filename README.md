@@ -17,6 +17,8 @@ The debug information collected and reported include:
 - Shared preferences
 - Status of network, power, and audio systems
 
+The recorded information is persisted on the device, ensuring availability even after a crash.
+Note: To prevent excessive growth, older entries will be periodically purged.
 ## Network traffic
 
 The library uses an ASM based gradle plugin to intercept OkHTTP traffic (no need to add Interceptors manually).
@@ -40,3 +42,67 @@ The library uses an ASM based gradle plugin to intercept OkHTTP traffic (no need
 ## Share the collected information
 
 <img src="assets/share.png" alt="Share debug information" width="200" height="400">
+
+# How to use
+
+## Gradle changes
+Add to repositories
+
+```
+    repositories {
+        maven { url = uri("https://jitpack.io") }
+    }
+```
+
+Add to root project gradle file
+```
+plugins {
+    id("com.sandymist.mobile.plugin.interceptor") version "0.1.3" apply false
+}
+```
+
+Add to app gradle file as follows
+
+```
+    plugins {
+        id("com.sandymist.mobile.plugin.interceptor")
+    }
+
+    interceptor {
+        targetClassName = "com.sandymist.mobile.plugins.network.NetworkPlugin"
+    }
+
+    dependencies {
+        debugImplementation("com.github.sandymist.android-debug-library:debuglib-debug:<version>")
+        releaseImplementation("com.github.sandymist.android-debug-library:debuglib-no-op:<version>")
+    }
+```
+
+## Code changes
+
+Integrate Debug menu into the app's UI.
+
+### Step 1: Add this line in Application onCreate() (in debug source set)
+
+```
+    DebugLib.init(this)
+```
+
+### Step 2: Add UI hook
+
+Option 1: Call the composable function directly.
+
+```
+    import com.sandymist.android.debuglib.ui.DebugScreen
+
+    DebugScreen(modifier: Modifier)
+```
+
+Option 2: Launch the DebugActivity (non-Jetpack-Compose apps)
+
+```
+    import com.sandymist.android.debuglib.ui.DebugActivity
+
+    val intent = Intent(context, DebugActivity::class.java)
+    context.startActivity(intent)
+```

@@ -3,6 +3,7 @@ package com.sandymist.android.debuglib.repository
 //import com.sandymist.android.debuglib.db.NetworkLogDao
 //import com.sandymist.android.debuglib.db.NetworkLogEntity
 import com.sandymist.android.debuglib.model.HarEntry
+import com.sandymist.android.debuglib.model.HarEntry_
 //import com.sandymist.android.debuglib.model.NetworkLog
 import io.objectbox.Box
 import io.objectbox.BoxStore
@@ -39,6 +40,15 @@ class NetworkLogRepository(
 //                _networkLogList.emit(it.map { entity -> entity.toNetworkLog() })
 //            }
         }
+
+        scope.launch {
+            query.subscribe().onlyChanges().observer {
+                val count = networkLogBoxStore.count()
+                if (count > HIGH_WATER_MARK) {
+                    deleteOldestEntries(count - LOW_WATER_MARK)
+                }
+            }
+        }
     }
 
     suspend fun getAllNetworkLogEntries(): List<HarEntry> = scope.async {
@@ -61,5 +71,21 @@ class NetworkLogRepository(
             networkLogBoxStore.removeAll()
 //            networkLogDao.clearAll()
         }
+    }
+
+    private fun deleteOldestEntries(deleteCount: Long) {
+        if (deleteCount <= 0) return
+
+        val oldEntries = networkLogBoxStore.query()
+            .order(HarEntry_.createdAt) // Order by oldest first
+            .build()
+            .find(0, deleteCount)
+
+        networkLogBoxStore.remove(oldEntries)
+    }
+
+    companion object {
+        private const val HIGH_WATER_MARK = 1000
+        private const val LOW_WATER_MARK = 800
     }
 }
