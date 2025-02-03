@@ -11,6 +11,8 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import android.os.Process
 import android.util.Log
+import kotlinx.coroutines.flow.catch
+import timber.log.Timber
 
 class LogcatListener(
     minLogLevel: Int = Log.INFO,
@@ -53,8 +55,12 @@ class LogcatListener(
         .flowOn(Dispatchers.IO)
 
     private suspend fun startListening() {
-        listenForLogs().collect { logMessage ->
-            log(logMessage)
-        }
+        listenForLogs()
+            .catch {
+                Timber.e(it, "Exception in logcat flow: ${it.message}")
+            }
+            .collect { logMessage ->
+                log(logMessage)
+            }
     }
 }
