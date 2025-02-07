@@ -1,9 +1,9 @@
 package com.sandymist.android.debuglib.model
 
-import com.sandymist.android.debuglib.utils.decompressString
-import com.sandymist.android.debuglib.utils.isContentTypeJson
-import com.sandymist.android.debuglib.utils.isPrintable
-import com.sandymist.android.debuglib.utils.prettyPrintJson
+import com.sandymist.android.common.utilities.decompressString
+import com.sandymist.android.common.utilities.isContentTypeJson
+import com.sandymist.android.common.utilities.isPrintable
+import com.sandymist.android.common.utilities.prettyPrintJson
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id

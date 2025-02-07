@@ -111,6 +111,12 @@ fun DebugMenu(
         DataItem(label = "Device monitor", modifier = Modifier.debouncedClickable {
             navController.navigate("device-monitor")
         })
+//        DataItem(label = "Build info", modifier = Modifier.debouncedClickable {
+//            navController.navigate("build-info")
+//        })
+        DataItem(label = "Memory info", modifier = Modifier.debouncedClickable {
+            navController.navigate("memory-info")
+        })
     }
 }
 
