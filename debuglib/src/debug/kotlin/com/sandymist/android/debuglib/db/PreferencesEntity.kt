@@ -10,7 +10,7 @@ import com.sandymist.android.debuglib.model.PrefData
 data class PreferencesEntity(
     val name: String,
     val value: String,
-    val type: String, // can be "header" or null/""
+    val type: String, // can be "header" or null
     val createdAt: Long,
 ) {
     fun toPrefData(): PrefData {

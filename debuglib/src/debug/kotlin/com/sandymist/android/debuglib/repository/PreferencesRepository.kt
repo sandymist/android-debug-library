@@ -5,22 +5,34 @@ import android.content.Context
 import android.preference.PreferenceManager
 import com.sandymist.android.debuglib.db.PreferencesDao
 import com.sandymist.android.debuglib.db.PreferencesEntity
+import com.sandymist.android.debuglib.di.AppContext
 import com.sandymist.android.debuglib.model.PrefData
 import com.sandymist.android.debuglib.model.DataListItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PreferencesRepository(
-    context: Context,
+interface PreferencesRepository {
+    val prefList: StateFlow<List<DataListItem>>
+
+    suspend fun getAllPreferencesEntries(): List<PrefData>
+    fun clear()
+}
+
+@Singleton
+class PreferencesRepositoryImpl @Inject constructor(
+    @AppContext context: Context,
     private val preferencesDao: PreferencesDao,
-) {
+): PreferencesRepository {
     private val _prefList = MutableStateFlow<List<DataListItem>>(emptyList())
-    val prefList = _prefList.asStateFlow()
+    override val prefList = _prefList.asStateFlow()
     private val scope = CoroutineScope(Dispatchers.IO)
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -74,11 +86,11 @@ class PreferencesRepository(
         }
     }
 
-    suspend fun getAllPreferencesEntries(): List<PrefData> = scope.async {
+    override suspend fun getAllPreferencesEntries(): List<PrefData> = scope.async {
         preferencesDao.getAllEntities().map { it.toPrefData() }
     }.await()
 
-    fun clear() {
+    override fun clear() {
         scope.launch {
             preferencesDao.clearAll()
         }

@@ -8,9 +8,11 @@ fun getRowLimitTrigger(
     orderByField: String,
     maxEntries: Int,
 ): String {
-    Timber.d("Row limit trigger on $tableName, max: $maxEntries")
+    val triggerName = "${tableName}_row_limit_trigger"
+
+    Timber.d("Row limit trigger $triggerName on $tableName, max: $maxEntries")
     return """
-        CREATE TRIGGER IF NOT EXISTS limit_rows
+        CREATE TRIGGER IF NOT EXISTS $triggerName
         AFTER INSERT ON $tableName
         WHEN (SELECT COUNT(*) FROM $tableName) > $maxEntries
         BEGIN

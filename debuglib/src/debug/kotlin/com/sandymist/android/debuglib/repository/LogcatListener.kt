@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib
+package com.sandymist.android.debuglib.repository
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,18 +29,17 @@ class LogcatListener(
 
     private val logcatCommand = arrayOf(
         "logcat",
-        "-v", "time", // Use time format
-        "*:${minLogLevel}", // Set minimum log level
+        "-v", "time",
+        "*:${minLogLevel}",
 //        "*:S", // Suppress other log levels
         "--pid=$pid"
     )
 
-    // Function to start the Logcat listener and emit logs to a Flow
     private fun listenForLogs(): Flow<String> = flow {
         val process = ProcessBuilder(*logcatCommand).start()
         val reader = BufferedReader(InputStreamReader(process.inputStream))
 
-        // Continuously read logcat output and emit it to the flow
+        // read logcat output and emit it to the flow
         reader.use {
             while (true) {
                 val logLine = it.readLine()

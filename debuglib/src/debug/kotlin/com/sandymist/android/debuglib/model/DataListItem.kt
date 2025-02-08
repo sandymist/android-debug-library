@@ -1,5 +1,6 @@
 package com.sandymist.android.debuglib.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -9,6 +10,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = PrefItemSerializer::class)
+@Immutable
 sealed interface DataListItem {
     @Serializable
     data class Header(val title: String): DataListItem

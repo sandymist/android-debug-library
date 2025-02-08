@@ -3,9 +3,11 @@ package com.sandymist.android.debuglib.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import androidx.annotation.Keep
+import androidx.compose.runtime.Immutable
 
 @Keep
 @Serializable
+@Immutable
 data class HarData(
     @SerialName("log")
     val log: Log?

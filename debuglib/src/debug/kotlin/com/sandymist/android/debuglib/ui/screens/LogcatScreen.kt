@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib.ui
+package com.sandymist.android.debuglib.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sandymist.android.debuglib.ui.component.ActionHandler
+import com.sandymist.android.debuglib.ui.component.Header
 import com.sandymist.android.debuglib.ui.viewmodel.LogcatViewModel
 
 @Composable

@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib.ui
+package com.sandymist.android.debuglib.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +27,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sandymist.android.common.utilities.ageString
 import com.sandymist.android.common.utilities.debouncedClickable
 import com.sandymist.android.debuglib.model.HarEntry
+import com.sandymist.android.debuglib.ui.component.ActionHandler
+import com.sandymist.android.debuglib.ui.component.Header
 //import com.sandymist.android.debuglib.model.NetworkLog
 import com.sandymist.android.debuglib.ui.viewmodel.NetworkLogViewModel
 

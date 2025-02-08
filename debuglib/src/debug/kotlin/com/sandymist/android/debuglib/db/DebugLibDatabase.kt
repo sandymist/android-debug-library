@@ -43,7 +43,7 @@ abstract class DebugLibDatabase : RoomDatabase() {
 
                 builder
                     .addCallback(callback)
-                    .fallbackToDestructiveMigration() // TODO: remove before launch
+                    .fallbackToDestructiveMigration() // TODO: make configurable
                     .build()
                 val instance = builder.build()
                 INSTANCE = instance
