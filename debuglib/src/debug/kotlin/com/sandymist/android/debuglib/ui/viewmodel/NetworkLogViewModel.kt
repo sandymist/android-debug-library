@@ -6,26 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.repository.NetworkLogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class NetworkLogViewModel @Inject constructor(
     private val networkLogRepository: NetworkLogRepository,
 ): ViewModel() {
-    private val _networkLogList = MutableStateFlow<List<HarEntry>>(emptyList())
-    val networkLogList = _networkLogList.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            networkLogRepository.networkLogList.collectLatest {
-                _networkLogList.emit(it)
-            }
-        }
-    }
+    val networkLogList: StateFlow<List<HarEntry>> = networkLogRepository.networkLogList
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     suspend fun getNetworkLog(id: Long) = networkLogRepository.getNetworkLog(id)
 

@@ -69,7 +69,7 @@ class NetworkLogRepositoryImpl @Inject constructor(
         }.await()
     }
 
-     override fun insert(harEntry: HarEntry): Long = networkLogBoxStore.put(harEntry)
+    override fun insert(harEntry: HarEntry): Long = networkLogBoxStore.put(harEntry)
 
     override fun clear() {
         scope.launch {

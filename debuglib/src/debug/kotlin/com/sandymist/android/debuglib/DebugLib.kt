@@ -17,6 +17,11 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
+/*
+ * Helper object to collect and store network log
+ * Called from Gradle plugin, can't use Hilt
+ * TODO: Explore if Hilt can be used to inject
+ */
 object DebugLib {
     private val networkLogFlow = MutableStateFlow<HarEntry?>(null)
     private val scope = CoroutineScope(Dispatchers.IO)
