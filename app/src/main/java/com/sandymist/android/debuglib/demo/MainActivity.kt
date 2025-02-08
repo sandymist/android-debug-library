@@ -11,7 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.sandymist.android.debuglib.demo.theme.DebugLibDemoTheme
-import com.sandymist.android.debuglib.ui.screens.DebugScreen
+import com.sandymist.android.debuglib.ui.DebugScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
