@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib.ui
+package com.sandymist.android.debuglib.ui.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,14 +12,18 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.sandymist.android.debuglib.DebugLib
 import com.sandymist.android.debuglib.model.DataListItem
+import com.sandymist.android.debuglib.ui.component.DataItem
+import com.sandymist.android.debuglib.ui.component.Header
+import com.sandymist.android.debuglib.ui.component.NameValueItem
 
 @Composable
-fun RoomScreen(modifier: Modifier = Modifier) {
-    val context = LocalContext.current.applicationContext
+fun RoomScreen(
+    modifier: Modifier = Modifier,
+    getDatabaseSize: suspend () -> Long,
+    getDatabasesAndTables: suspend () -> Map<String, List<String>>,
+) {
     val dbSize = remember { mutableLongStateOf(0L) }
     val tables = remember { mutableStateOf<Map<String, List<String>>?>(null) }
     val tableList = remember { derivedStateOf {
@@ -32,8 +36,8 @@ fun RoomScreen(modifier: Modifier = Modifier) {
     }}
 
     LaunchedEffect(Unit) {
-        dbSize.longValue = DebugLib.getRoomDatabaseSize(context)
-        tables.value = DebugLib.getRoomDatabasesAndTables(context)
+        dbSize.longValue = getDatabaseSize()
+        tables.value = getDatabasesAndTables()
     }
 
     LazyColumn(

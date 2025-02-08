@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib.ui
+package com.sandymist.android.debuglib.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.sandymist.android.common.utilities.getMemoryUsage
+import com.sandymist.android.debuglib.ui.component.DataItem
 
 @Composable
 fun MemoryInfoScreen(modifier: Modifier = Modifier) {

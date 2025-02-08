@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib.ui
+package com.sandymist.android.debuglib.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sandymist.android.debuglib.model.HarEntry
+import com.sandymist.android.debuglib.ui.component.DataItem
+import com.sandymist.android.debuglib.ui.component.Header
 
 @Suppress("unused")
 @Composable

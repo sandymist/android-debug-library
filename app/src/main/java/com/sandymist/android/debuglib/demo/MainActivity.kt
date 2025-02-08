@@ -1,5 +1,6 @@
 package com.sandymist.android.debuglib.demo
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,7 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.sandymist.android.debuglib.demo.theme.DebugLibDemoTheme
-import com.sandymist.android.debuglib.ui.DebugScreen
+import com.sandymist.android.debuglib.ui.screens.DebugScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
         .addInterceptor(loggingInterceptor)
         .build()
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

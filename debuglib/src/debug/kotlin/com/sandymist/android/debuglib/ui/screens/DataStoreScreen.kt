@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib.ui
+package com.sandymist.android.debuglib.ui.screens
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.sandymist.android.debuglib.model.DataListItem
+import com.sandymist.android.debuglib.ui.component.DataItem
+import com.sandymist.android.debuglib.ui.component.Header
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow

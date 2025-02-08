@@ -1,11 +1,13 @@
 package com.sandymist.android.debuglib.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.sandymist.android.debuglib.model.DataListItem
 import com.sandymist.android.debuglib.repository.PreferencesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class PreferencesViewModel (
+@HiltViewModel
+class PreferencesViewModel @Inject constructor(
     private val preferencesRepository: PreferencesRepository,
 ): ViewModel() {
     val preferencesList = preferencesRepository.prefList
@@ -20,18 +22,5 @@ class PreferencesViewModel (
 
     fun clear() {
         preferencesRepository.clear()
-    }
-}
-
-class PreferencesViewModelFactory(
-    private val preferencesRepository: PreferencesRepository,
-) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(PreferencesViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return PreferencesViewModel(preferencesRepository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

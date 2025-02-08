@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib.ui
+package com.sandymist.android.debuglib.ui.screens
 
 import android.content.Context
 import androidx.compose.foundation.layout.Column
@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.sandymist.android.debuglib.ui.component.DataItem
 
 @Composable
 fun BranchInfoScreen(modifier: Modifier = Modifier) {

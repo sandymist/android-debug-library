@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib
+package com.sandymist.android.debuglib.repository
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

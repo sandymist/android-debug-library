@@ -1,4 +1,4 @@
-package com.sandymist.android.debuglib.ui
+package com.sandymist.android.debuglib.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sandymist.android.debuglib.model.DataListItem
+import com.sandymist.android.debuglib.ui.component.DataItem
+import com.sandymist.android.debuglib.ui.component.Header
 import com.sandymist.android.debuglib.ui.viewmodel.PreferencesViewModel
 
 @Suppress("unused")
