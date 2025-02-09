@@ -4,7 +4,7 @@
     public *;
 }
 
--keep class com.sandymist.android.debuglib.ui.DebugScreenKt { *; }
+-keep class com.sandymist.android.debuglib.ui.screens.DebugScreenKt { *; }
 
 # Keep kotlinx.serialization classes and annotations
 -keep class kotlinx.serialization.** { *; }

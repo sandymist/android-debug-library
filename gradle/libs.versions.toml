@@ -2,6 +2,7 @@
 agp = "8.3.2" # upgrade causes hilt to break
 androidUtilities = "0.0.9"
 datastoreVersion = "1.1.1"
+debuglibDebug = "0.0.8"
 deviceMonitor = "0.0.2"
 hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
@@ -32,6 +33,8 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+debuglib-debug = { module = "com.github.sandymist.android-debug-library:debuglib-debug", version.ref = "debuglibDebug" }
+debuglib-no-op = { module = "com.github.sandymist.android-debug-library:debuglib-no-op", version.ref = "debuglibDebug" }
 device-monitor = { module = "com.github.sandymist:android-device-monitor", version.ref = "deviceMonitor" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }

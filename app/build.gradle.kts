@@ -49,7 +49,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":debuglib"))
+    debugImplementation(libs.debuglib.debug)
+    releaseImplementation(libs.debuglib.no.op)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
