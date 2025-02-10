@@ -18,7 +18,7 @@ The debug information collected and reported include:
 
 - Network traffic
 - Logcat output
-- Summary of Room Database storage
+- Summary and contents of Room Database
 - Shared preferences
 - Status of network, power, and audio systems
 
@@ -98,7 +98,7 @@ Integrate Debug menu into the app's UI.
 Option 1: Call the composable function directly.
 
 ```
-    import com.sandymist.android.debuglib.ui.DebugScreen
+    import com.sandymist.android.debuglib.ui.screens.DebugScreen
 
     DebugScreen(modifier: Modifier)
 ```
