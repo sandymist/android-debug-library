@@ -1,5 +1,6 @@
 package com.sandymist.android.debuglib.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,12 +9,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,8 +40,8 @@ import com.sandymist.android.common.utilities.debouncedClickable
 import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.ui.component.ActionHandler
 import com.sandymist.android.debuglib.ui.component.Header
-//import com.sandymist.android.debuglib.model.NetworkLog
 import com.sandymist.android.debuglib.ui.viewmodel.NetworkLogViewModel
+import kotlinx.coroutines.launch
 
 @Suppress("unused")
 @Composable
@@ -65,19 +76,49 @@ fun NetworkLogScreen(
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NetworkLogList(
     modifier: Modifier = Modifier,
     logList: List<HarEntry>,
     onClick: (Long) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+    val scope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+    val hasScrolled by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 0
+        }
+    }
+
+    LaunchedEffect(logList) {
+        if (!hasScrolled) {
+            listState.animateScrollToItem(0)
+        }
+    }
+
+    Scaffold(
+        floatingActionButton = {
+            if (hasScrolled) {
+                FloatingActionButton(onClick = {
+                    scope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                }) {
+                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Add")
+                }
+            }
+        }
     ) {
-        items(logList) {
-            NetworkLogItemSummary(it) { id ->
-                onClick(id)
+        LazyColumn(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            state = listState,
+        ) {
+            items(items = logList, key = { it.id }) {
+                NetworkLogItemSummary(it) { id ->
+                    onClick(id)
+                }
             }
         }
     }
