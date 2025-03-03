@@ -57,21 +57,21 @@ object OkHTTPToHAR {
                 val content = body.source().buffer.clone()
                 val size = content.completeSegmentByteCount()
                 val contentString = content.readString(StandardCharsets.UTF_8)
-                if (size > 1024) {
-                    //val blob = contentString.compressString()
-                    HarContent(
-                        size = size,
-                        mimeType = body.contentType()?.toString() ?: "",
-                        text = "Content too long, more than 1KB"
-                        //blob = blob,
-                    )
-                } else {
+//                if (size > 1024) {
+//                    //val blob = contentString.compressString()
+//                    HarContent(
+//                        size = size,
+//                        mimeType = body.contentType()?.toString() ?: "",
+//                        text = "Content too long, more than 1KB"
+//                        //blob = blob,
+//                    )
+//                } else {
                     HarContent(
                         size = size,
                         mimeType = body.contentType()?.toString() ?: "",
                         text = contentString
                     )
-                }
+//                }
             },
             redirectURL = response.header("Location") ?: "",
             headersSize = -1, // OkHttp doesn't provide size details

@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun performGetRequest(): String {
-        val url = "https://jsonplaceholder.typicode.com/posts/1"
+        val url = "https://jsonplaceholder.typicode.com/posts?_limit=50"
         val request = Request.Builder()
             .url(url)
             .build()
