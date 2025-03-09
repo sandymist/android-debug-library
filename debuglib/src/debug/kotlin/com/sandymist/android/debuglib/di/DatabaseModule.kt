@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.objectbox.BoxStore
+import java.util.concurrent.CompletableFuture
 import javax.inject.Singleton
 
 @Module
@@ -33,8 +34,10 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideBoxStore(@AppContext context: Context): BoxStore {
-        return MyObjectBox.builder()
-            .androidContext(context)
-            .build()
+        return CompletableFuture.supplyAsync {
+            MyObjectBox.builder()
+                .androidContext(context)
+                .build()
+        }.get()
     }
 }

@@ -28,16 +28,16 @@ interface PreferencesRepository {
 
 @Singleton
 class PreferencesRepositoryImpl @Inject constructor(
-    @AppContext context: Context,
+    @AppContext private val context: Context,
     private val preferencesDao: PreferencesDao,
 ): PreferencesRepository {
     private val _prefList = MutableStateFlow<List<DataListItem>>(emptyList())
     override val prefList = _prefList.asStateFlow()
     private val scope = CoroutineScope(Dispatchers.IO)
-    private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     init {
         scope.launch {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
             val items = mutableListOf<DataListItem>()
             val defaultPrefs = sharedPreferences.all
             if (defaultPrefs.isNotEmpty()) {

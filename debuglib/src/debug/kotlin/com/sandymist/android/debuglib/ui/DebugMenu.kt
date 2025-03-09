@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.HorizontalDivider
@@ -41,6 +42,16 @@ fun DebugMenu(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val menuList = listOf(
+        MenuItem(label = "Network log", action = { navController.navigate("network-log") }),
+        MenuItem(label = "Logcat", action = { navController.navigate("logcat") }),
+        MenuItem(label = "View preferences", action = { navController.navigate("preferences") }),
+        MenuItem(label = "Room", action = { navController.navigate("room") }),
+        MenuItem(label = "Device monitor", action = { navController.navigate("device-monitor") }),
+        MenuItem(label = "Memory info", action = { navController.navigate("memory-info") }),
+//        MenuItem(label = "View DataStore", action = { navController.navigate("datastore") }),
+//        MenuItem(label = "Build info", action = { navController.navigate("build-info") }),
+    )
 
     Column(
         modifier = modifier
@@ -50,7 +61,7 @@ fun DebugMenu(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text("Debug screen", style = MaterialTheme.typography.headlineSmall)
+            Text("Debug screen", style = MaterialTheme.typography.headlineMedium)
             Icon(
                 imageVector = Icons.Outlined.Share,
                 contentDescription = "Export",
@@ -86,31 +97,23 @@ fun DebugMenu(
         }
         HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(vertical = 8.dp))
 
-        DataItem(label = "Network log", modifier = Modifier.debouncedClickable {
-            navController.navigate("network-log")
-        })
-        DataItem(label = "Logcat", modifier = Modifier.debouncedClickable {
-            navController.navigate("logcat")
-        })
-        DataItem(label = "View preferences", modifier = Modifier.debouncedClickable {
-            navController.navigate("preferences")
-        })
-        // TODO: enable after figuring out how to handle not instantiating multiple data store
-        // objects
-//        DataItem(label = "View DataStore", modifier = Modifier.debouncedClickable {
-//            navController.navigate("datastore")
-//        })
-        DataItem(label = "Room", modifier = Modifier.debouncedClickable {
-            navController.navigate("room")
-        })
-        DataItem(label = "Device monitor", modifier = Modifier.debouncedClickable {
-            navController.navigate("device-monitor")
-        })
-//        DataItem(label = "Build info", modifier = Modifier.debouncedClickable {
-//            navController.navigate("build-info")
-//        })
-        DataItem(label = "Memory info", modifier = Modifier.debouncedClickable {
-            navController.navigate("memory-info")
-        })
+        MenuRow(menuItems = menuList)
+    }
+}
+
+data class MenuItem(val label: String, val action: () -> Unit)
+
+@Composable
+fun MenuRow(menuItems: List<MenuItem>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        items(menuItems.size) { index ->
+            val menuItem = menuItems[index]
+            DataItem(label = menuItem.label, modifier = Modifier.debouncedClickable {
+                menuItem.action()
+            })
+            HorizontalDivider(color = Color.LightGray)
+        }
     }
 }
