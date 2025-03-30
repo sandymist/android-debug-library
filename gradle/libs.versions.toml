@@ -16,6 +16,7 @@ lifecycleRuntimeKtx = "2.8.7"
 loggingInterceptorVersion = "4.11.0"
 activityCompose = "1.9.3"
 composeBom = "2024.12.01"
+materialIconsExtended = "1.7.8"
 objectboxGradlePlugin = "4.0.3"
 objectboxKotlin = "4.0.3"
 objectboxProcessor = "3.8.1"
@@ -30,6 +31,7 @@ android-utilities = { module = "com.github.saravr:android-utilities", version.re
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastoreVersion" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }

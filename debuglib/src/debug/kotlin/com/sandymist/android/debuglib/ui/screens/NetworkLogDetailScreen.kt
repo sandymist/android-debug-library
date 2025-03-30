@@ -1,10 +1,13 @@
 package com.sandymist.android.debuglib.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,8 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.sandymist.android.debuglib.model.HarEntry
+import com.sandymist.android.debuglib.ui.component.ActionHandler
 import com.sandymist.android.debuglib.ui.component.DataItem
 import com.sandymist.android.debuglib.ui.component.Header
 
@@ -26,6 +32,8 @@ fun NetworkLogDetailScreen(
     getNetworkLog: suspend () -> HarEntry,
 ) {
     var networkLog: HarEntry? by remember { mutableStateOf(null) }
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         networkLog = getNetworkLog()
@@ -42,7 +50,18 @@ fun NetworkLogDetailScreen(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
     ) {
-        Header(title = "Network log")
+        Header(
+            title = "Network log",
+            actionHandler = ActionHandler(
+                icon = Icons.Default.ContentCopy,
+                contentDescription = "Copy to clipboard",
+                handler = {
+                    val content = networkLog!!.response.toString()
+                    clipboardManager.setText(androidx.compose.ui.text.AnnotatedString(content))
+                    Toast.makeText(context, "Copied to clipboard!", Toast.LENGTH_SHORT).show()
+                }
+            )
+        )
 
         NetworkLogItemSummary(networkLog!!) {
         }
