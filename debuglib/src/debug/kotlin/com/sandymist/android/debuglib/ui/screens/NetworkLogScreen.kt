@@ -119,6 +119,7 @@ fun NetworkLogList(
                 NetworkLogItemSummary(it) { id ->
                     onClick(id)
                 }
+                HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(vertical = 8.dp))
             }
         }
     }
@@ -151,15 +152,28 @@ fun NetworkLogItemSummary(
         Text(text = networkLog.request.url, maxLines = 3, overflow = TextOverflow.Ellipsis)
     }
 
-    val age = networkLog.createdAt / 1000
-    Text(
-        text = age.ageString(),
-        style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
-        textAlign = TextAlign.End,
-        modifier = Modifier.fillMaxWidth(),
-    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val elapsed = networkLog.time / 1000000
+        Text(
+            "$elapsed ms",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary,
+        )
 
-    HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(top = 4.dp))
+        val age = networkLog.createdAt / 1000
+        Text(
+            text = "${age.ageString()} ago",
+            style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic),
+            textAlign = TextAlign.End,
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.secondary,
+        )
+    }
 }
 //
 //@Preview
