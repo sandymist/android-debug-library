@@ -79,7 +79,7 @@ fun NetworkLogDetailScreen(
         HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(vertical = 8.dp))
 
         Text("Body", style = MaterialTheme.typography.headlineMedium)
-        Text(networkLog!!.response.content.toString())
+        Text(networkLog!!.response.content.text.toString())
     }
 }
 
