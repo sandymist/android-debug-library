@@ -160,7 +160,7 @@ fun NetworkLogItemSummary(
     ) {
         val elapsed = networkLog.time / 1000000
         Text(
-            "$elapsed ms",
+            "⏱\uFE0F $elapsed ms",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.secondary,
         )
