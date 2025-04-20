@@ -15,12 +15,19 @@ import javax.inject.Inject
 class NetworkLogViewModel @Inject constructor(
     private val networkLogRepository: NetworkLogRepository,
 ): ViewModel() {
+    val count = networkLogRepository.countFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), 0L)
+    val searchString = networkLogRepository.searchString
     val networkLogList: StateFlow<List<HarEntry>> = networkLogRepository.networkLogList
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     suspend fun getNetworkLog(id: Long) = networkLogRepository.getNetworkLog(id)
 
-    suspend fun getAllNetworkLogEntries() = networkLogRepository.getAllNetworkLogEntries()
+    suspend fun getNetworkLogEntries(searchString: String = "") = networkLogRepository.getNetworkLogEntries(searchString)
+
+    fun setSearchString(searchString: String) {
+        networkLogRepository.setSearchString(searchString)
+    }
 
     fun clear() {
         networkLogRepository.clear()
