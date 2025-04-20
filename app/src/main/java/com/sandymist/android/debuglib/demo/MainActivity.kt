@@ -57,8 +57,8 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             while (--counter >= 0) {
                 try {
-                    val response = performGetRequest()
-                    Timber.d(response)
+                    performPostsGetRequest()
+                    performTodosGetRequest()
                 } catch (e: Exception) {
                     Timber.e("Error: ${e.message}")
                     "Exception: ${e.javaClass.name} - ${e.message}"
@@ -68,8 +68,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun performGetRequest(): String {
-        val url = "https://jsonplaceholder.typicode.com/posts?_limit=50"
+    private fun performPostsGetRequest() = performGetRequest("https://jsonplaceholder.typicode.com/posts")
+
+    private fun performTodosGetRequest() = performGetRequest("https://jsonplaceholder.typicode.com/todos")
+
+    private fun performGetRequest(url: String): String {
         val request = Request.Builder()
             .url(url)
             .build()

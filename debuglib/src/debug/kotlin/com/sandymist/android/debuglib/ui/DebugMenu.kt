@@ -68,7 +68,7 @@ fun DebugMenu(
                 modifier = Modifier
                     .debouncedClickable {
                         scope.launch(Dispatchers.Default) {
-                            val networkLogData = networkLogViewModel.getAllNetworkLogEntries()
+                            val networkLogData = networkLogViewModel.getNetworkLogEntries()
                             val logcatData = logcatViewModel.getAllLogcatEntries()
                             val preferencesData = preferencesViewModel.getAllPreferenceEntries()
                             val exportData = ExportData(

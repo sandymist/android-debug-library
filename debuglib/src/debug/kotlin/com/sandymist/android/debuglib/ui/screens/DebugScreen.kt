@@ -1,9 +1,11 @@
 package com.sandymist.android.debuglib.ui.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -44,9 +46,15 @@ fun DebugScreen(
             )
         }
         composable("network-log") {
+            val searchString by networkLogViewModel.searchString.collectAsStateWithLifecycle()
+            val logCount by networkLogViewModel.count.collectAsStateWithLifecycle()
+
             NetworkLogScreen(
                 modifier = modifier,
                 networkLogViewModel = networkLogViewModel,
+                logCount = logCount,
+                searchString = searchString,
+                setSearchString = networkLogViewModel::setSearchString,
                 onClick = { id ->
                     navController.navigate("network-log-detail/${id}")
                 }

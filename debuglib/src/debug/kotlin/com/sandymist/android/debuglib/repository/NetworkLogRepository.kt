@@ -9,18 +9,25 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
 interface NetworkLogRepository {
     val networkLogList: StateFlow<List<HarEntry>>
+    val countFlow: Flow<Long>
+    val searchString: StateFlow<String>
 
-    suspend fun getAllNetworkLogEntries(): List<HarEntry>
+    fun setSearchString(searchString: String)
+    suspend fun getNetworkLogEntries(searchString: String = ""): List<HarEntry>
     suspend fun getNetworkLog(id: Long): HarEntry
     fun insert(harEntry: HarEntry): Long
     fun clear()
@@ -38,15 +45,39 @@ class NetworkLogRepositoryImpl @Inject constructor(
     private val query = networkLogBoxStore.query()
         .orderDesc(HarEntry_.createdAt)
         .build()
+    private var searchStringFlow = MutableStateFlow("")
+    override val searchString = searchStringFlow.asStateFlow()
+
+    override val countFlow: Flow<Long> = callbackFlow {
+        val subscription = query.subscribe()
+            .onlyChanges()
+            .observer { data ->
+                trySend(data.size.toLong())
+            }
+
+        awaitClose {
+            subscription.cancel()
+        }
+    }
 
     init {
         scope.launch {
             val flow = query
                 .subscribe()
                 .toFlow()
-            flow.collectLatest {
-                _networkLogList.emit(it)
+
+            combine(flow, searchStringFlow) { list, searchString ->
+                if (searchString.isBlank()) {
+                    list
+                } else {
+                    list.filter { log ->
+                        log.request.url.contains(searchString)
+                    }
+                }
             }
+                .collectLatest {
+                    _networkLogList.emit(it)
+                }
         }
 
         scope.launch {
@@ -59,8 +90,14 @@ class NetworkLogRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllNetworkLogEntries(): List<HarEntry> = scope.async {
-        networkLogBoxStore.all
+    override fun setSearchString(searchString: String) {
+        searchStringFlow.value = searchString
+    }
+
+    override suspend fun getNetworkLogEntries(searchString: String): List<HarEntry> = scope.async {
+        networkLogBoxStore.all.filter {
+             log -> log.request.url.contains(searchString)
+        }
     }.await()
 
     override suspend fun getNetworkLog(id: Long): HarEntry {
