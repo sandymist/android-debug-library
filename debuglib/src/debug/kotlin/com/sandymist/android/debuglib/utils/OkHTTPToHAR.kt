@@ -23,16 +23,16 @@ object OkHTTPToHAR {
 
         // Parse request details
         val harRequest = HarRequest(
-            method = request.method(),
-            url = request.url().toString(),
+            method = request.method,
+            url = request.url.toString(),
             httpVersion = "HTTP/1.1", // OkHttp uses HTTP/1.1 by default
-            headers = request.headers().names().map { name ->
+            headers = request.headers.names().map { name ->
                 HarHeader(name, request.header(name) ?: "")
             },
-            queryString = request.url().queryParameterNames().map { name ->
-                HarQueryString(name, request.url().queryParameter(name) ?: "")
+            queryString = request.url.queryParameterNames.map { name ->
+                HarQueryString(name, request.url.queryParameter(name) ?: "")
             },
-            postData = request.body()?.let { body ->
+            postData = request.body?.let { body ->
                 val buffer = Buffer()
                 body.writeTo(buffer)
                 HarPostData(
@@ -41,15 +41,15 @@ object OkHTTPToHAR {
                 )
             },
             headersSize = -1, // OkHttp doesn't provide size details
-            bodySize = request.body()?.contentLength()?.toInt() ?: 0
+            bodySize = request.body?.contentLength()?.toInt() ?: 0
         )
 
         // Parse response details
         val harResponse = HarResponse(
-            status = response.code(),
-            statusText = response.message(),
+            status = response.code,
+            statusText = response.message,
             httpVersion = "HTTP/1.1", // OkHttp uses HTTP/1.1 by default
-            headers = response.headers().names().map { name ->
+            headers = response.headers.names().map { name ->
                 HarHeader(name, response.header(name) ?: "")
             },
             content = peekedResponseBody.let { body ->

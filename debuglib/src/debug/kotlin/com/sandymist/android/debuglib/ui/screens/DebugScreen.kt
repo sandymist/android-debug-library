@@ -60,6 +60,14 @@ fun DebugScreen(
                 }
             )
         }
+        composable("mocks-list") {
+            MocksListScreen(
+                modifier = modifier,
+                getMocks = {
+                    networkLogViewModel.getMocks()
+                },
+            )
+        }
         composable(
             route = "network-log-detail/{id}",
             arguments = listOf(
@@ -70,6 +78,9 @@ fun DebugScreen(
 
             NetworkLogDetailScreen(
                 modifier = modifier,
+                mockRequest = networkLogViewModel::mockRequest,
+                unMockRequest = networkLogViewModel::unMockRequest,
+                isMocked = networkLogViewModel::isMocked,
                 getNetworkLog = {
                     val networkLog = networkLogViewModel.getNetworkLog(id)
                     networkLog

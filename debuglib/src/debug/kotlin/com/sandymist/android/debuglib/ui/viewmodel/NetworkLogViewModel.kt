@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sandymist.android.debuglib.model.HarEntry
+import com.sandymist.android.debuglib.model.MockRequest
 import com.sandymist.android.debuglib.repository.NetworkLogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,6 +33,14 @@ class NetworkLogViewModel @Inject constructor(
     fun clear() {
         networkLogRepository.clear()
     }
+
+    fun mockRequest(mockRequest: MockRequest) = networkLogRepository.mockRequest(mockRequest)
+
+    fun unMockRequest(path: String, method: String) = networkLogRepository.unMockRequest(path, method)
+
+    fun isMocked(path: String, method: String) = networkLogRepository.isMocked(path, method)
+
+    fun getMocks() = networkLogRepository.getMocks()
 }
 
 class NetworkLogViewModelFactory(

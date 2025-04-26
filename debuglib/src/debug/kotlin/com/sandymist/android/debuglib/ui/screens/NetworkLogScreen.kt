@@ -50,6 +50,7 @@ import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.ui.component.ActionHandler
 import com.sandymist.android.debuglib.ui.component.Header
 import com.sandymist.android.debuglib.ui.viewmodel.NetworkLogViewModel
+import com.sandymist.android.debuglib.utils.TEST_HAR_ENTRY
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -236,24 +237,21 @@ fun NetworkLogItemSummary(
         )
     }
 }
-//
-//@Preview
-//@Composable
-//fun PreviewNetworkLogScreen() {
-//    val logList = listOf(
-//        NetworkLog(
-//            responseCode = 201,
-//            url = "--> GET https://www.omnycontent.com/d/programs/5e27a451-e6e6-4c51-aa03-a7370003783c/68621bca-f318-4ad9-90df-a82600035a72/image.jpg?t=1691192679&size=Large\n",
-//            method = "GET",
-//        ),
-//        NetworkLog(
-//            responseCode = 403,
-//            url = "https://api.podcastindex.org/api/1.0/podcasts/trending?lang=en-US&cat=technology",
-//            method = "POST",
-//        ),
-//    )
-//    NetworkLogList(logList = logList) {}
-//}
+
+
+@Preview
+@Composable
+fun PreviewNetworkLogScreen() {
+    val logList = listOf(
+        TEST_HAR_ENTRY,
+    )
+    NetworkLogList(
+        logList = logList,
+        onClick = {},
+        searchString = "",
+        setSearchString = {},
+    )
+}
 
 @Preview
 @Composable

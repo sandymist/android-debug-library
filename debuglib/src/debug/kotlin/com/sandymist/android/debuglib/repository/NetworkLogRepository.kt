@@ -1,7 +1,11 @@
 package com.sandymist.android.debuglib.repository
 
+import com.sandymist.android.common.utilities.getURLPath
+import com.sandymist.android.debuglib.mock.MockServer
+import com.sandymist.android.debuglib.mock.MocksList
 import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.model.HarEntry_
+import com.sandymist.android.debuglib.model.MockRequest
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.toFlow
@@ -18,6 +22,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,12 +36,17 @@ interface NetworkLogRepository {
     suspend fun getNetworkLog(id: Long): HarEntry
     fun insert(harEntry: HarEntry): Long
     fun clear()
+    fun mockRequest(mockRequest: MockRequest)
+    fun unMockRequest(path: String, method: String)
+    fun isMocked(path: String, method: String): Boolean
+    fun getMocks(): MocksList
 }
 
 @Singleton
 @OptIn(ExperimentalCoroutinesApi::class)
 class NetworkLogRepositoryImpl @Inject constructor(
     boxStore: BoxStore,
+    private val mockServer: MockServer,
 ): NetworkLogRepository {
     private val _networkLogList = MutableStateFlow<List<HarEntry>>(emptyList())
     override val networkLogList = _networkLogList.asStateFlow()
@@ -112,6 +122,28 @@ class NetworkLogRepositoryImpl @Inject constructor(
         scope.launch {
             networkLogBoxStore.removeAll()
         }
+    }
+
+    override fun mockRequest(mockRequest: MockRequest) {
+        Timber.d("Mock Request: $mockRequest")
+        val path = mockRequest.path.getURLPath()
+        mockServer.mockGetRequest(
+            path,
+            mockRequest.body,
+            mockRequest.code
+        )
+    }
+
+    override fun unMockRequest(path: String, method: String) {
+        mockServer.unMockRequest(path, method)
+    }
+
+    override fun isMocked(path: String, method: String): Boolean {
+        return mockServer.isMocked(path, method)
+    }
+
+    override fun getMocks(): MocksList {
+        return mockServer.getMocks()
     }
 
     private fun deleteOldestEntries(deleteCount: Long) {
