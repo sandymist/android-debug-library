@@ -144,11 +144,11 @@ class NetworkLogRepositoryImpl @Inject constructor(
     }
 
     override suspend fun unMockRequest(path: String, method: String) {
-        mockDao.delete(path, method)
+        mockDao.delete(path.getURLPath(), method)
     }
 
     override suspend fun isMocked(path: String, method: String): Boolean {
-        return mockDao.exists(path, method)
+        return mockDao.exists(path.getURLPath(), method)
     }
 
     override fun getMocks(): Flow<List<MockItem>> {

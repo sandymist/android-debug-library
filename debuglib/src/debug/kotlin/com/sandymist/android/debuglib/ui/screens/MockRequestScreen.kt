@@ -89,6 +89,7 @@ fun MockRequestScreen(
                 scope.launch {
                     if (mocked) {
                         unMockRequest(networkLog.request.url, networkLog.request.method)
+                        mocked = isMocked(networkLog.request.url, networkLog.request.method)
                         Toast.makeText(context, "Un-mock request sent", Toast.LENGTH_SHORT).show()
                     } else {
                         mockRequest(
@@ -99,8 +100,9 @@ fun MockRequestScreen(
                                 code = code.toIntOrNull() ?: 0, // TODO: handle invalid code
                             )
                         )
+                        mocked = isMocked(networkLog.request.url, networkLog.request.method)
+                        Toast.makeText(context, "Mock request sent", Toast.LENGTH_SHORT).show()
                     }
-                    Toast.makeText(context, "Mock request sent", Toast.LENGTH_SHORT).show()
                 }
             }
         ) {
