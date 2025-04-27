@@ -58,9 +58,10 @@ fun NetworkLogDetailScreen(
     ScreenStackRoot(
         startScreen = { onNavigateToDetail ->
             NetworkLogDetails(
-                modifier,
-                networkLog!!,
-                onNavigateToDetail,
+                modifier = modifier,
+                networkLog = networkLog!!,
+                onNavigateToDetail = onNavigateToDetail,
+                isMocked = isMocked,
             )
         },
         detailScreen = {
@@ -80,10 +81,16 @@ fun NetworkLogDetailScreen(
 fun NetworkLogDetails(
     modifier: Modifier = Modifier,
     networkLog: HarEntry,
+    isMocked: suspend (String, String) -> Boolean,
     onNavigateToDetail: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
+    var mocked by remember { mutableStateOf(false) }
+
+    LaunchedEffect(networkLog) {
+        mocked = isMocked(networkLog.request.url, networkLog.request.method)
+    }
 
     Column(
         modifier = modifier
@@ -103,6 +110,7 @@ fun NetworkLogDetails(
                 }
             )
         )
+        HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(vertical = 8.dp))
 
         NetworkLogItemSummary(networkLog) { }
 
@@ -114,7 +122,7 @@ fun NetworkLogDetails(
             OutlinedButton(
                 onClick = onNavigateToDetail,
             ) {
-                Text("Mock this request")
+                Text(if (mocked) "Un mock this request" else "Mock this request")
             }
         }
         HorizontalDivider(color = Color.LightGray, modifier = Modifier.padding(vertical = 8.dp))

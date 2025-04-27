@@ -14,6 +14,7 @@ data class MockEntity(
     val path: String,
     val body: String,
     val code: Int,
+    val enabled: Boolean,
     val createdAt: Long,
 ) {
     fun toMockItem(): MockItem {
@@ -22,6 +23,7 @@ data class MockEntity(
             path = path,
             body = body,
             code = code,
+            enabled = enabled,
             createdAt = createdAt,
         )
     }
@@ -33,6 +35,7 @@ data class MockEntity(
                 path = mockItem.path,
                 body = mockItem.body,
                 code = mockItem.code,
+                enabled = mockItem.enabled,
                 createdAt = mockItem.createdAt,
             )
         }

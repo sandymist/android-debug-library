@@ -22,6 +22,9 @@ interface MockDao {
     @Query("SELECT * FROM $MOCK_TABLE_NAME WHERE path = :path AND method = :method")
     suspend fun get(path: String, method: String): MockEntity?
 
+    @Query("UPDATE $MOCK_TABLE_NAME SET enabled = :enabled WHERE id = :id")
+    suspend fun enable(id: Long, enabled: Boolean): Int
+
     @Query("DELETE FROM $MOCK_TABLE_NAME WHERE path = :path AND method = :method")
     suspend fun delete(path: String, method: String)
 

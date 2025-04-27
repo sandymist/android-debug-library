@@ -6,4 +6,5 @@ data class MockItem(
     val body: String,
     val code: Int,
     val createdAt: Long,
+    val enabled: Boolean,
 )

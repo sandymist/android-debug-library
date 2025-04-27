@@ -39,8 +39,10 @@ interface NetworkLogRepository {
     suspend fun getNetworkLog(id: Long): HarEntry
     fun insert(harEntry: HarEntry): Long
     fun clear()
-    suspend fun mockRequest(mockRequest: MockRequest)
-    suspend fun unMockRequest(path: String, method: String)
+    suspend fun addMockRequest(mockRequest: MockRequest)
+    suspend fun enableMock(mockId: Int)
+    suspend fun disableMock(mockId: Int)
+    suspend fun deleteMockRequest(path: String, method: String)
     suspend fun isMocked(path: String, method: String): Boolean
     fun getMocks(): Flow<List<MockItem>>
 }
@@ -128,14 +130,15 @@ class NetworkLogRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun mockRequest(mockRequest: MockRequest) = withContext(Dispatchers.IO) {
-        Timber.d("Mock Request: $mockRequest")
+    override suspend fun addMockRequest(mockRequest: MockRequest) = withContext(Dispatchers.IO) {
+        Timber.d("Add Mock Request: $mockRequest")
         val path = mockRequest.path.getURLPath()
         val mockItem = MockItem(
             path = path,
             body = mockRequest.body,
             code = mockRequest.code,
             method = mockRequest.method,
+            enabled = true,
             createdAt = System.currentTimeMillis(),
         )
         mockDao.insert(
@@ -143,7 +146,15 @@ class NetworkLogRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun unMockRequest(path: String, method: String) {
+    override suspend fun enableMock(mockId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun disableMock(mockId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteMockRequest(path: String, method: String) {
         mockDao.delete(path.getURLPath(), method)
     }
 

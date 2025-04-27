@@ -54,5 +54,6 @@ fun MockItem(mockItem: MockItem) {
     ) {
         Text(text = "Path: ${mockItem.path}")
         Text(text = "Method: ${mockItem.method}")
+        Text(text = "Enabled: ${mockItem.enabled}")
     }
 }
