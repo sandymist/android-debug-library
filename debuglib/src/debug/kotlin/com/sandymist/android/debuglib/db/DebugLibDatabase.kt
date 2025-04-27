@@ -14,6 +14,7 @@ private const val DB_NAME = "debug_lib_database"
     entities = [
         LogcatEntity::class,
         PreferencesEntity::class,
+        MockEntity::class,
     ],
     version = DB_VERSION,
     exportSchema = true,
@@ -21,6 +22,7 @@ private const val DB_NAME = "debug_lib_database"
 abstract class DebugLibDatabase : RoomDatabase() {
     abstract fun logcatDao(): LogcatDao
     abstract fun preferencesDao(): PreferencesDao
+    abstract fun mockDao(): MockDao
 
     companion object {
         @Volatile

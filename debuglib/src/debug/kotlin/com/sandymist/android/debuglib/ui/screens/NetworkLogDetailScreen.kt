@@ -40,9 +40,9 @@ import com.sandymist.android.debuglib.ui.component.ScreenStackRoot
 fun NetworkLogDetailScreen(
     modifier: Modifier = Modifier,
     getNetworkLog: suspend () -> HarEntry,
-    mockRequest: (MockRequest) -> Unit,
-    unMockRequest: (String, String) -> Unit,
-    isMocked: (String, String) -> Boolean,
+    mockRequest: suspend (MockRequest) -> Unit,
+    unMockRequest: suspend (String, String) -> Unit,
+    isMocked: suspend (String, String) -> Boolean,
 ) {
     var networkLog: HarEntry? by remember { mutableStateOf(null) }
 

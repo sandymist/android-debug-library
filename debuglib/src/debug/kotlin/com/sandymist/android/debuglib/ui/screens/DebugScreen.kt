@@ -61,11 +61,11 @@ fun DebugScreen(
             )
         }
         composable("mocks-list") {
+            val mockList by networkLogViewModel.getMocks().collectAsStateWithLifecycle(emptyList())
+
             MocksListScreen(
                 modifier = modifier,
-                getMocks = {
-                    networkLogViewModel.getMocks()
-                },
+                mockList = mockList,
             )
         }
         composable(

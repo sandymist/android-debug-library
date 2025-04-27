@@ -11,9 +11,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,21 +27,27 @@ import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.model.MockRequest
 import com.sandymist.android.debuglib.ui.component.Header
 import com.sandymist.android.debuglib.utils.TEST_HAR_ENTRY
+import kotlinx.coroutines.launch
 
 @Composable
 fun MockRequestScreen(
     modifier: Modifier = Modifier,
     networkLog: HarEntry,
-    mockRequest: (MockRequest) -> Unit,
-    unMockRequest: (String, String) -> Unit,
-    isMocked: (String, String) -> Boolean,
+    mockRequest: suspend (MockRequest) -> Unit,
+    unMockRequest: suspend (String, String) -> Unit,
+    isMocked: suspend (String, String) -> Boolean,
 ) {
     val context = LocalContext.current
     var code by remember { mutableStateOf(networkLog.response.status.toString()) }
     var body by remember {
         mutableStateOf(networkLog.response.content.text.toString())
     }
-    val mocked = isMocked(networkLog.request.url, networkLog.request.method)
+    var mocked by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(networkLog) {
+        mocked = isMocked(networkLog.request.url, networkLog.request.method)
+    }
 
     Column(
         modifier = modifier
@@ -78,18 +86,20 @@ fun MockRequestScreen(
 
         Button(
             onClick = {
-                if (mocked) {
-                    unMockRequest(networkLog.request.url, networkLog.request.method)
-                    Toast.makeText(context, "Un-mock request sent", Toast.LENGTH_SHORT).show()
-                } else {
-                    mockRequest(
-                        MockRequest(
-                            path = networkLog.request.url,
-                            method = networkLog.request.method,
-                            body = body,
-                            code = code.toIntOrNull() ?: 0, // TODO: handle invalid code
+                scope.launch {
+                    if (mocked) {
+                        unMockRequest(networkLog.request.url, networkLog.request.method)
+                        Toast.makeText(context, "Un-mock request sent", Toast.LENGTH_SHORT).show()
+                    } else {
+                        mockRequest(
+                            MockRequest(
+                                path = networkLog.request.url,
+                                method = networkLog.request.method,
+                                body = body,
+                                code = code.toIntOrNull() ?: 0, // TODO: handle invalid code
+                            )
                         )
-                    )
+                    }
                     Toast.makeText(context, "Mock request sent", Toast.LENGTH_SHORT).show()
                 }
             }

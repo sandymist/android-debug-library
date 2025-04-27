@@ -34,11 +34,11 @@ class NetworkLogViewModel @Inject constructor(
         networkLogRepository.clear()
     }
 
-    fun mockRequest(mockRequest: MockRequest) = networkLogRepository.mockRequest(mockRequest)
+    suspend fun mockRequest(mockRequest: MockRequest) = networkLogRepository.mockRequest(mockRequest)
 
-    fun unMockRequest(path: String, method: String) = networkLogRepository.unMockRequest(path, method)
+    suspend fun unMockRequest(path: String, method: String) = networkLogRepository.unMockRequest(path, method)
 
-    fun isMocked(path: String, method: String) = networkLogRepository.isMocked(path, method)
+    suspend fun isMocked(path: String, method: String) = networkLogRepository.isMocked(path, method)
 
     fun getMocks() = networkLogRepository.getMocks()
 }

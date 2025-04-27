@@ -1,8 +1,9 @@
 package com.sandymist.android.debuglib.repository
 
 import com.sandymist.android.common.utilities.getURLPath
-import com.sandymist.android.debuglib.mock.MockServer
-import com.sandymist.android.debuglib.mock.MocksList
+import com.sandymist.android.debuglib.db.MockDao
+import com.sandymist.android.debuglib.db.MockEntity
+import com.sandymist.android.debuglib.model.MockItem
 import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.model.HarEntry_
 import com.sandymist.android.debuglib.model.MockRequest
@@ -21,7 +22,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,18 +39,19 @@ interface NetworkLogRepository {
     suspend fun getNetworkLog(id: Long): HarEntry
     fun insert(harEntry: HarEntry): Long
     fun clear()
-    fun mockRequest(mockRequest: MockRequest)
-    fun unMockRequest(path: String, method: String)
-    fun isMocked(path: String, method: String): Boolean
-    fun getMocks(): MocksList
+    suspend fun mockRequest(mockRequest: MockRequest)
+    suspend fun unMockRequest(path: String, method: String)
+    suspend fun isMocked(path: String, method: String): Boolean
+    fun getMocks(): Flow<List<MockItem>>
 }
 
 @Singleton
 @OptIn(ExperimentalCoroutinesApi::class)
 class NetworkLogRepositoryImpl @Inject constructor(
     boxStore: BoxStore,
-    private val mockServer: MockServer,
 ): NetworkLogRepository {
+    @Inject
+    lateinit var mockDao: MockDao
     private val _networkLogList = MutableStateFlow<List<HarEntry>>(emptyList())
     override val networkLogList = _networkLogList.asStateFlow()
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -124,26 +128,31 @@ class NetworkLogRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun mockRequest(mockRequest: MockRequest) {
+    override suspend fun mockRequest(mockRequest: MockRequest) = withContext(Dispatchers.IO) {
         Timber.d("Mock Request: $mockRequest")
         val path = mockRequest.path.getURLPath()
-        mockServer.mockGetRequest(
-            path,
-            mockRequest.body,
-            mockRequest.code
+        val mockItem = MockItem(
+            path = path,
+            body = mockRequest.body,
+            code = mockRequest.code,
+            method = mockRequest.method,
+            createdAt = System.currentTimeMillis(),
+        )
+        mockDao.insert(
+            MockEntity.fromMockItem(mockItem)
         )
     }
 
-    override fun unMockRequest(path: String, method: String) {
-        mockServer.unMockRequest(path, method)
+    override suspend fun unMockRequest(path: String, method: String) {
+        mockDao.delete(path, method)
     }
 
-    override fun isMocked(path: String, method: String): Boolean {
-        return mockServer.isMocked(path, method)
+    override suspend fun isMocked(path: String, method: String): Boolean {
+        return mockDao.exists(path, method)
     }
 
-    override fun getMocks(): MocksList {
-        return mockServer.getMocks()
+    override fun getMocks(): Flow<List<MockItem>> {
+        return mockDao.getAll().map { it -> it.map { it.toMockItem() } }
     }
 
     private fun deleteOldestEntries(deleteCount: Long) {
