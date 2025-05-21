@@ -35,7 +35,7 @@ class NetworkPlugin: Interceptor {
         val response: Response = chain.proceed(request)
         val endTime = System.nanoTime()
 
-        Log.e("NetworkPlugin", "++++ intercept: ${request.url}")
+        Log.d("NetworkPlugin", "Network plugin intercept: ${request.url}")
         val harEntry = OkHTTPToHAR.convertOkHTTPToHAR(request, response, endTime - startTime)
 
         DebugLib.insertNetworkLog(harEntry)

@@ -29,12 +29,14 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.model.MockRequest
 import com.sandymist.android.debuglib.ui.component.ActionHandler
 import com.sandymist.android.debuglib.ui.component.Header
 import com.sandymist.android.debuglib.ui.component.ScreenStackRoot
+import com.sandymist.android.debuglib.utils.TEST_HAR_ENTRY
 
 @Composable
 fun NetworkLogDetailScreen(
@@ -104,7 +106,7 @@ fun NetworkLogDetails(
                 icon = Icons.Default.ContentCopy,
                 contentDescription = "Copy to clipboard",
                 handler = {
-                    val content = networkLog.response.toString()
+                    val content = networkLog.toString()
                     clipboardManager.setText(androidx.compose.ui.text.AnnotatedString(content))
                     Toast.makeText(context, "Copied to clipboard!", Toast.LENGTH_SHORT).show()
                 }
@@ -156,4 +158,16 @@ fun Headers(title: String, headerList: List<String>) {
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewNetworkLogDetailScreen() {
+    NetworkLogDetailScreen(
+        modifier = Modifier,
+        getNetworkLog = { TEST_HAR_ENTRY },
+        mockRequest = { },
+        unMockRequest = { _, _ -> },
+        isMocked = { _, _ -> false }
+    )
 }

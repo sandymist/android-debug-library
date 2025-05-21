@@ -11,7 +11,6 @@ import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,7 +38,8 @@ class MockServer @Inject constructor(
                             .setBody("{\"error\": \"Not found\"}")
                     }
                 }
-                start(MOCK_SERVER_PORT)
+                start(0)
+                MockServerInfo.setPort(port)
             }
         }
 
@@ -99,7 +99,7 @@ class MockServer @Inject constructor(
 
     companion object {
         private val mockList = mutableMapOf<String, MockResponse>()
-        const val MOCK_SERVER_PORT = 8080
+        val MOCK_SERVER_PORT = MockServerInfo.port
 
         private fun addMock(mockRequest: MockRequest, mockResponse: MockResponse) {
             val key = mockRequest.path + "/" + mockRequest.method
@@ -114,8 +114,17 @@ class MockServer @Inject constructor(
         fun isMocked(path: String, method: String): MockResponse? {
             val key = "$path/$method"
             val mockRequest = mockList[key]
-            Timber.e("++++ Mock: $mockRequest")
             return mockRequest
         }
+    }
+}
+
+private object MockServerInfo {
+    @Volatile
+    var port: Int = -1
+        private set
+
+    fun setPort(p: Int) {
+        port = p
     }
 }
