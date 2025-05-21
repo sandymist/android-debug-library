@@ -106,6 +106,8 @@ dependencies {
     implementation(libs.objectbox.kotlin)
     kapt(libs.objectbox.processor)
 
+    implementation(libs.mockwebserver)
+
     implementation(libs.timber)
     implementation(libs.android.utilities)
     implementation(libs.androidx.datastore.preferences)

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import com.sandymist.android.debuglib.di.BoxStoreEntryPoint
+import com.sandymist.android.debuglib.di.MockServerEntryPoint
+import com.sandymist.android.debuglib.mock.MockServer
 import com.sandymist.android.debuglib.model.HarEntry
 import com.sandymist.android.debuglib.repository.NetworkLogRepository
 import com.sandymist.android.debuglib.repository.NetworkLogRepositoryImpl
@@ -28,6 +30,7 @@ object DebugLib {
     private lateinit var networkLogRepository: NetworkLogRepository
     private lateinit var networkLogViewModel: NetworkLogViewModel
     private val viewModelStore = ViewModelStore()
+    private lateinit var mockServer: MockServer
 
     @Suppress("unused")
     fun init(context: Context) {
@@ -37,7 +40,13 @@ object DebugLib {
                 BoxStoreEntryPoint::class.java
             ).getBoxStore()
         }
-
+        val mockServer: MockServer by lazy {
+            EntryPointAccessors.fromApplication(
+                context,
+                MockServerEntryPoint::class.java
+            ).getMockServer()
+        }
+        this.mockServer = mockServer
         networkLogRepository = NetworkLogRepositoryImpl(boxStore)
         val networkLogViewModelFactory = NetworkLogViewModelFactory(networkLogRepository)
         networkLogViewModel = ViewModelProvider(viewModelStore, networkLogViewModelFactory)[NetworkLogViewModel::class.java]
@@ -59,6 +68,8 @@ object DebugLib {
 
     @Suppress("unused")
     fun shutdown() {
+        mockServer.shutdown()
+        viewModelStore.clear()
         scope.cancel()
     }
 }

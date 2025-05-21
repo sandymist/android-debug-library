@@ -26,7 +26,7 @@ import java.io.IOException
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        //level = HttpLoggingInterceptor.Level.BODY
     }
     private val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)

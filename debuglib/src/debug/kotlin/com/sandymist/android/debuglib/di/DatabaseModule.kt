@@ -3,6 +3,7 @@ package com.sandymist.android.debuglib.di
 import android.content.Context
 import com.sandymist.android.debuglib.db.DebugLibDatabase
 import com.sandymist.android.debuglib.db.LogcatDao
+import com.sandymist.android.debuglib.db.MockDao
 import com.sandymist.android.debuglib.db.PreferencesDao
 import com.sandymist.android.debuglib.model.MyObjectBox
 import dagger.Module
@@ -26,6 +27,10 @@ object DatabaseModule {
     @Provides
     fun provideLogcatDao(database: DebugLibDatabase): LogcatDao =
         database.logcatDao()
+
+    @Provides
+    fun provideMockDao(database: DebugLibDatabase): MockDao =
+        database.mockDao()
 
     @Provides
     fun providePreferencesDao(database: DebugLibDatabase): PreferencesDao =

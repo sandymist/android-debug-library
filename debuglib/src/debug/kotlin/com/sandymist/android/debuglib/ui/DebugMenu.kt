@@ -44,6 +44,7 @@ fun DebugMenu(
     val scope = rememberCoroutineScope()
     val menuList = listOf(
         MenuItem(label = "Network log", action = { navController.navigate("network-log") }),
+        MenuItem(label = "Network mocks", action = { navController.navigate("mocks-list") }),
         MenuItem(label = "Logcat", action = { navController.navigate("logcat") }),
         MenuItem(label = "View preferences", action = { navController.navigate("preferences") }),
         MenuItem(label = "Room", action = { navController.navigate("room") }),

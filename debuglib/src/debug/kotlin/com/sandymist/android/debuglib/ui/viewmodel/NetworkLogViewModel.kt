@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sandymist.android.debuglib.model.HarEntry
+import com.sandymist.android.debuglib.model.MockRequest
 import com.sandymist.android.debuglib.repository.NetworkLogRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,6 +33,18 @@ class NetworkLogViewModel @Inject constructor(
     fun clear() {
         networkLogRepository.clear()
     }
+
+    suspend fun mockRequest(mockRequest: MockRequest) = networkLogRepository.addMockRequest(mockRequest)
+
+    suspend fun unMockRequest(path: String, method: String) = networkLogRepository.deleteMockRequest(path, method)
+
+    suspend fun enableMock(mockId: Int) = networkLogRepository.enableMock(mockId)
+
+    suspend fun disableMock(mockId: Int) = networkLogRepository.disableMock(mockId)
+
+    suspend fun isMocked(path: String, method: String) = networkLogRepository.isMocked(path, method)
+
+    fun getMocks() = networkLogRepository.getMocks()
 }
 
 class NetworkLogViewModelFactory(
@@ -46,3 +59,11 @@ class NetworkLogViewModelFactory(
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
+
+data class MockHandlers(
+    val mockRequest: suspend (MockRequest) -> Unit,
+    val unMockRequest: suspend (String, String) -> Unit,
+    val enableMock: suspend (Int) -> Unit,
+    val disableMock: suspend (Int) -> Unit,
+    val isMocked: suspend (String, String) -> Boolean,
+)
