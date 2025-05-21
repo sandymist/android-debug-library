@@ -99,7 +99,8 @@ class MockServer @Inject constructor(
 
     companion object {
         private val mockList = mutableMapOf<String, MockResponse>()
-        val MOCK_SERVER_PORT = MockServerInfo.port
+        val MOCK_SERVER_PORT: Int
+            get() = MockServerInfo.port
 
         private fun addMock(mockRequest: MockRequest, mockResponse: MockResponse) {
             val key = mockRequest.path + "/" + mockRequest.method
